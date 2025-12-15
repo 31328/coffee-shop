@@ -1,23 +1,16 @@
 package com.hanghae.coffeeshop.services;
 
-import com.hanghae.coffeeshop.domain.menu.Menu;
-import com.hanghae.coffeeshop.domain.menu.MenuRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+
+import com.hanghae.coffeeshop.dto.MenuDto;
 
 import java.util.List;
 
-@Service
-public class MenuService {
+public interface MenuService {
 
-    private final MenuRepository menuRepository;
+    MenuDto createMenu(MenuDto menuDto);
+    MenuDto updateMenu(MenuDto menuDto, Long menuId);
+    void deleteMenu(Long menuId);
+    MenuDto getMenu(Long menuId);
+    List<MenuDto> getMenuList();
 
-    @Autowired
-    public MenuService(MenuRepository menuRepository) {
-        this.menuRepository = menuRepository;
-    }
-
-    public List<Menu> getMenuList() {
-        return menuRepository.findAll();
-    }
 }
