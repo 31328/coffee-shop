@@ -40,7 +40,6 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public MenuDto updateMenu(MenuDto menuDto, Long menuId) {
         MenuDto currentMenu = getMenu(menuId);
-        // MenuDto returnValue = null;
         Optional<MenuEntity> existingMenuOptional = menuRepository.findByName(menuDto.getName());
         if (existingMenuOptional.isPresent()) {
             MenuEntity existingMenuEntity = existingMenuOptional.get();
@@ -49,7 +48,7 @@ public class MenuServiceImpl implements MenuService {
             }
         }
         menuDto.setId(currentMenu.getId());
-        MenuEntity updatedMenu =  menuRepository.saveAndFlush(tempConverter.MenuDtoToEntity(menuDto));
+        MenuEntity updatedMenu = menuRepository.saveAndFlush(tempConverter.MenuDtoToEntity(menuDto));
         return tempConverter.MenuEntityToDto(updatedMenu);
     }
 

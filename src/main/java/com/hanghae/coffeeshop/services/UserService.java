@@ -2,18 +2,22 @@ package com.hanghae.coffeeshop.services;
 
 import com.hanghae.coffeeshop.dto.UserDto;
 
+import java.util.List;
+
 public interface UserService {
+
+
     UserDto getUser(Long userId);
 
     void deleteUser(Long userId);
 
-    void addUser(UserDto userDto);
+    UserDto addUser(UserDto userDto);
 
-    void updateUser(UserDto userDto);
+    UserDto updateUser(UserDto userDto, Long userId);
 
-    void addPoints(Long userId, Long pointId);
+    void addPoints(Long userId, Integer points);
 
-    void deletePoints(Long userId, Long pointId);
+    void deletePoints(Long userId, Integer points);
 
-
+    List<UserDto> listAllUsers();
 }
