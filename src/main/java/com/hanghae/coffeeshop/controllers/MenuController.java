@@ -25,4 +25,6 @@ public class MenuController {
     public List<MenuDto> getMenuList() {
         return menuService.getMenuList();
     }
+
+
 }

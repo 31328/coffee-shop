@@ -17,7 +17,7 @@ public interface UserService {
 
     void addPoints(Long userId, Integer points);
 
-    void deletePoints(Long userId, Integer points);
+    void reducePoints(Long userId, Integer points);
 
     List<UserDto> listAllUsers();
 }

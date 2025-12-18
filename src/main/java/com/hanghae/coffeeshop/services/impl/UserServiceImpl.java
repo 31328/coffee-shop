@@ -56,6 +56,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto addUser(UserDto userDto) {
+        userDto.setPoints(10);
         UserEntity addUserEntity = userRepository.save(tempConverter.userDtoToEntity(userDto));
         return tempConverter.userEntityToDto(addUserEntity);
     }
@@ -73,8 +74,11 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void addPoints(Long userId, Integer points) {
         UserDto userDto = getUser(userId);
-        Integer currentPoints =  userDto.getPoints();
-        userDto.setPoints(currentPoints + points);
+        Integer currentPoints = userDto.getPoints();
+        if (currentPoints + points > 9999){
+            throw new InstanceUndefinedException("Maximum points 9999");
+        }
+            userDto.setPoints(currentPoints + points);
         userRepository.save(tempConverter.userDtoToEntity(userDto));
         PointTransactionDto pointsTransactionDto = new PointTransactionDto();
         pointsTransactionDto.setPoints(currentPoints);
@@ -86,9 +90,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void deletePoints(Long userId, Integer points) {
+    public void reducePoints(Long userId, Integer points) {
         UserDto userDto = getUser(userId);
-        Integer currentPoints =  userDto.getPoints();
+        Integer currentPoints = userDto.getPoints();
+        if (points > currentPoints) {
+            throw new InstanceUndefinedException("Negative balance is prohibited");
+        }
         userDto.setPoints(currentPoints - points);
         userRepository.save(tempConverter.userDtoToEntity(userDto));
         PointTransactionDto pointsTransactionDto = new PointTransactionDto();
@@ -109,8 +116,9 @@ public class UserServiceImpl implements UserService {
         }
         return returnValue;
     }
+
     @PostConstruct
-    private void loadData(){
+    private void loadData() {
         List<UserDto> users = List.of(
                 new UserDto("pass001", 120),
                 new UserDto("pass002", 340),
@@ -154,11 +162,11 @@ public class UserServiceImpl implements UserService {
                 new UserDto("pass040", 660)
         );
         List<UserEntity> userEntityList = userRepository.findAll();
-        if(userEntityList.isEmpty()){
+        if (userEntityList.isEmpty()) {
 
-            for (Iterator<UserDto> iterator = users.iterator();iterator.hasNext();) {
+            for (Iterator<UserDto> iterator = users.iterator(); iterator.hasNext(); ) {
                 UserDto userDto = iterator.next();
-            userEntityList.add(tempConverter.userDtoToEntity(userDto));
+                userEntityList.add(tempConverter.userDtoToEntity(userDto));
             }
             userRepository.saveAll(userEntityList);
         }
