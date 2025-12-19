@@ -20,36 +20,38 @@ public class UserController {
     private final UserService userService;
 
     @Autowired
-    public UserController(UserService userService) { this.userService = userService; }
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping
-    public ResponseEntity<List<UserDto>> getAllUsers(){
+    public ResponseEntity<List<UserDto>> getAllUsers() {
         return new ResponseEntity<>(userService.listAllUsers(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<UserDto> findUser(@PathVariable ("id") Long userId ){
+    public ResponseEntity<UserDto> findUser(@PathVariable("id") Long userId) {
         return new ResponseEntity<>(userService.getUser(userId), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<UserDto> addUser (@RequestBody @Validated UserDto userDto, Errors error){
-        if (error.hasErrors()){
+    public ResponseEntity<UserDto> addUser(@RequestBody @Validated UserDto userDto, Errors error) {
+        if (error.hasErrors()) {
             throw new DataNotValidatedException("User data has not been validated");
         }
         return new ResponseEntity<>(userService.addUser(userDto), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable ("id") Long userId){
+    public ResponseEntity<String> deleteUser(@PathVariable("id") Long userId) {
         userService.deleteUser(userId);
-        return new ResponseEntity<String> ("User with id: " + userId + " has been removed", HttpStatus.OK);
+        return new ResponseEntity<String>("User with id: " + userId + " has been removed", HttpStatus.OK);
     }
 
-    @PutMapping(value = "/{id}")
-    public ResponseEntity<String> updateUser(@PathVariable ("id") Long userId, @RequestBody @Validated UserDto userDto, Errors errors){
-        if (errors.hasErrors()){
-            throw new DataNotValidatedException("User data has not being validated");
+    @PutMapping(value = "/  {id}")
+    public ResponseEntity<String> updateUser(@PathVariable("id") Long userId, @RequestBody @Validated UserDto userDto, Errors errors) {
+        if (errors.hasErrors()) {
+            throw new DataNotValidatedException("User data failed validation");
         }
         userService.updateUser(userDto, userId);
 
@@ -63,7 +65,7 @@ public class UserController {
     }
 
     @PutMapping("/delete-point/{userId}/{points}")
-    public ResponseEntity<String> reducePoint(@PathVariable("userId") Long userId, @PathVariable("points") Integer points){
+    public ResponseEntity<String> reducePoint(@PathVariable("userId") Long userId, @PathVariable("points") Integer points) {
         userService.reducePoints(userId, points);
         return new ResponseEntity<>(points + "points have been removed from user with id:" + userId, HttpStatus.OK);
     }

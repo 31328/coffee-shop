@@ -1,10 +1,7 @@
 package com.hanghae.coffeeshop.dto;
 
 
-import jakarta.validation.constraints.DecimalMax;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 import java.io.Serializable;
 
@@ -14,7 +11,7 @@ public class MenuDto implements Serializable {
     @NotEmpty
     @Size(min = 4, max = 100)
     private String name;
-    @NotEmpty
+    @NotNull
     @DecimalMax(value = "1000")
     @DecimalMin(value = "0")
     private Double price;
