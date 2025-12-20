@@ -29,14 +29,14 @@ public class MenuController {
         return new ResponseEntity<>(menuService.getMenu(menuId), HttpStatus.OK);
     }
 
-    @GetMapping("/list")
+    @GetMapping
     public ResponseEntity<List<MenuDto>> getMenuList() {
         return new ResponseEntity<>(menuService.getMenuList(), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<String> createMenu(@RequestBody @Validated MenuDto menuDto, Errors error) {
-        if (error.hasErrors()) {
+    public ResponseEntity<String> createMenu(@RequestBody @Validated MenuDto menuDto, Errors errors) {
+        if (errors.hasErrors()) {
             throw new DataNotValidatedException("Menu data has not been validated");
         }
         menuService.createMenu(menuDto);
@@ -44,7 +44,10 @@ public class MenuController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateMenu(MenuDto menuDto, @PathVariable("id") Long menuId) {
+    public ResponseEntity<String> updateMenu(@RequestBody @Validated MenuDto menuDto, @PathVariable("id") Long menuId, Errors errors) {
+        if (errors.hasErrors()) {
+            throw new DataNotValidatedException("Menu data has not been validated");
+        }
         menuService.updateMenu(menuDto, menuId);
         return new ResponseEntity<>("Menu updated", HttpStatus.OK);
     }

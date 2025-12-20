@@ -68,7 +68,7 @@ public class MenuServiceImpl implements MenuService {
         if (menuEntityOptional.isPresent()) {
             returnValue = tempConverter.MenuEntityToDto(menuEntityOptional.get());
         } else {
-            throw new InstanceUndefinedException("Menu with id " + menuId + " does not exist");
+            throw new InstanceUndefinedException("Menu with id:" + menuId + " does not exist");
         }
         return returnValue;
     }

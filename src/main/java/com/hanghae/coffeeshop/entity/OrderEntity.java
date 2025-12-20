@@ -17,7 +17,7 @@ public class OrderEntity implements Serializable {
     private UserEntity user;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "menu_id")
+    @JoinColumn(name = "menu_id", nullable = false)
     private MenuEntity menu;
 
     public MenuEntity getMenu() {

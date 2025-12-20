@@ -13,6 +13,7 @@ public class OrderDto implements Serializable {
     @NotNull
     @Positive
     private Long userId;
+    // validation rules
     @NotNull
     @Positive
     private Long menuId;
