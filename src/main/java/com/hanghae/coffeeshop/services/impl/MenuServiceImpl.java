@@ -7,6 +7,7 @@ import com.hanghae.coffeeshop.exceptions.DuplicateException;
 import com.hanghae.coffeeshop.exceptions.InstanceUndefinedException;
 import com.hanghae.coffeeshop.repositories.MenuRepository;
 import com.hanghae.coffeeshop.services.MenuService;
+import com.hanghae.coffeeshop.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,11 +18,14 @@ import java.util.*;
 public class MenuServiceImpl implements MenuService {
     private MenuRepository menuRepository;
     private TempConverter tempConverter;
+    private OrderService orderService;
 
+    //setter injection
     @Autowired
-    private void Initialise(MenuRepository menuRepository, TempConverter tempConverter) {
+    private void Initialise(MenuRepository menuRepository, TempConverter tempConverter, OrderService orderService) {
         this.menuRepository = menuRepository;
         this.tempConverter = tempConverter;
+        this.orderService = orderService;
     }
 
     @Transactional
@@ -56,6 +60,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public void deleteMenu(Long menuId) {
         getMenu(menuId);
+        orderService.deleteAllByMenuId(menuId);
         menuRepository.deleteById(menuId);
         menuRepository.flush();
     }

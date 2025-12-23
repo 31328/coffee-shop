@@ -9,8 +9,11 @@ public interface OrderService {
 
     void deleteOrder(Long orderId);
 
+    void deleteAllByMenuId(Long menuId);
+
     List<OrderDto> listAll();
 
     OrderDto getOrderById(Long orderId);
 
+    // Name of the drink, price and adding points ALSO the item quantity
 }

@@ -1,9 +1,11 @@
 package com.hanghae.coffeeshop.dto;
 
 
+import com.hanghae.coffeeshop.entity.ProductEntity;
 import jakarta.validation.constraints.*;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class MenuDto implements Serializable {
 
@@ -15,6 +17,24 @@ public class MenuDto implements Serializable {
     @DecimalMax(value = "1000")
     @DecimalMin(value = "0")
     private Double price;
+    private List<Long> productIdes;
+    private Integer points;
+
+    public Integer getPoints() {
+        return points;
+    }
+
+    public void setPoints(Integer points) {
+        this.points = points;
+    }
+
+    public List<Long> getProductIdes() {
+        return productIdes;
+    }
+
+    public void setProductIdes(List<Long> productIdes) {
+        this.productIdes = productIdes;
+    }
 
     public Long getId() {
         return id;
