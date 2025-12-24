@@ -40,7 +40,7 @@ public class MenuController {
             throw new DataNotValidatedException("Menu data has not been validated");
         }
         menuService.createMenu(menuDto);
-        return new ResponseEntity<>("The menu created", HttpStatus.OK);
+        return new ResponseEntity<>("The menu created", HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")

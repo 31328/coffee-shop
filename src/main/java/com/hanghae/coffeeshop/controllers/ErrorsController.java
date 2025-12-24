@@ -1,6 +1,7 @@
 package com.hanghae.coffeeshop.controllers;
 
 import com.hanghae.coffeeshop.exceptions.DataNotValidatedException;
+import com.hanghae.coffeeshop.exceptions.DuplicateException;
 import com.hanghae.coffeeshop.exceptions.InstanceUndefinedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,5 +20,10 @@ public class ErrorsController {
     @ExceptionHandler(DataNotValidatedException.class)
     public ResponseEntity<String> handleDataNotValidatedException(DataNotValidatedException ex){
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.PRECONDITION_FAILED);
+    }
+
+    @ExceptionHandler(DuplicateException.class)
+    public ResponseEntity<String> HandleDuplicateException(DuplicateException ex){
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
     }
 }

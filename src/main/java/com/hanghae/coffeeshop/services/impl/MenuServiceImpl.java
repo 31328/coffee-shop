@@ -31,6 +31,7 @@ public class MenuServiceImpl implements MenuService {
     @Transactional
     @Override
     public MenuDto createMenu(MenuDto menuDto) {
+        menuDto.setPoints(0);
         Optional<MenuEntity> existingMenuOptional = menuRepository.findByName(menuDto.getName());
         if (existingMenuOptional.isPresent()) {
             throw new DuplicateException("Menu with name " + menuDto.getName() + " already exists");

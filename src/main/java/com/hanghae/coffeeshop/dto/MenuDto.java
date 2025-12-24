@@ -1,6 +1,7 @@
 package com.hanghae.coffeeshop.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hanghae.coffeeshop.entity.ProductEntity;
 import jakarta.validation.constraints.*;
 
@@ -18,6 +19,7 @@ public class MenuDto implements Serializable {
     @DecimalMin(value = "0")
     private Double price;
     private List<Long> productIdes;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Integer points;
 
     public Integer getPoints() {

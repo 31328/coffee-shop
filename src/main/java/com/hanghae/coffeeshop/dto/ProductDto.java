@@ -1,5 +1,6 @@
 package com.hanghae.coffeeshop.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hanghae.coffeeshop.entity.MenuEntity;
 import jakarta.validation.constraints.*;
 
@@ -7,7 +8,7 @@ import java.io.Serializable;
 import java.util.List;
 
 public class ProductDto implements Serializable {
-
+    // validation rules
     private Long id;
     @NotEmpty
     @Size(min = 4, max = 50)
@@ -20,6 +21,7 @@ public class ProductDto implements Serializable {
     @NotNull
     @PositiveOrZero
     private Integer points;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private List<Long> menusIdes;
     @NotEmpty
     @Size(min = 4, max = 255)
