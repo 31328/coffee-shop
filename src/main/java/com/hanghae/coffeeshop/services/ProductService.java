@@ -14,4 +14,6 @@ public interface ProductService {
     ProductDto getProduct(Long productId);
 
     List<ProductDto> getProductList();
+
+    void addMenu(Long productId, Long menuId);
 }

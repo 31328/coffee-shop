@@ -2,7 +2,6 @@ package com.hanghae.coffeeshop.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.hanghae.coffeeshop.entity.ProductEntity;
 import jakarta.validation.constraints.*;
 
 import java.io.Serializable;
@@ -14,9 +13,10 @@ public class MenuDto implements Serializable {
     @NotEmpty
     @Size(min = 4, max = 100)
     private String name;
-    @NotNull
-    @DecimalMax(value = "1000")
-    @DecimalMin(value = "0")
+    //@NotNull
+    //@DecimalMax(value = "1000")
+    //@DecimalMin(value = "0")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Double price;
     private List<Long> productIdes;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)

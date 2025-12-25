@@ -1,28 +1,34 @@
 package com.hanghae.coffeeshop.services.impl;
 
 import com.hanghae.coffeeshop.converter.TempConverter;
+import com.hanghae.coffeeshop.dto.MenuDto;
 import com.hanghae.coffeeshop.dto.ProductDto;
+import com.hanghae.coffeeshop.entity.MenuEntity;
 import com.hanghae.coffeeshop.entity.ProductEntity;
 import com.hanghae.coffeeshop.exceptions.DuplicateException;
 import com.hanghae.coffeeshop.exceptions.InstanceUndefinedException;
 import com.hanghae.coffeeshop.repositories.ProductRepository;
+import com.hanghae.coffeeshop.services.MenuService;
 import com.hanghae.coffeeshop.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.html.parser.Entity;
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 @Service
 public class ProductServiceImpl implements ProductService {
     private ProductRepository productRepository;
     private TempConverter tempConverter;
+    private MenuService menuService;
 
     @Autowired
-    private void Initialise(ProductRepository productRepository, TempConverter tempConverter) {
+    private void Initialise(ProductRepository productRepository, TempConverter tempConverter, MenuService menuService) {
         this.productRepository = productRepository;
         this.tempConverter = tempConverter;
+        this.menuService = menuService;
     }
 
     @Transactional
@@ -80,9 +86,35 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductDto> getProductList() {
         List<ProductEntity> productEntities = productRepository.findAll();
         List<ProductDto> returnValue = new ArrayList<>();
-        for (Iterator<ProductEntity> iterator = productEntities.iterator(); iterator.hasNext();){
+        for (Iterator<ProductEntity> iterator = productEntities.iterator(); iterator.hasNext(); ) {
             returnValue.add(tempConverter.productEntityToDto(iterator.next()));
         }
         return returnValue;
+    }
+
+    @Override
+    @Transactional
+    public void addMenu(Long productId, Long menuId) {
+        ProductDto productDto = getProduct(productId);
+        MenuDto menuDto = menuService.getMenu(menuId);
+        Optional<List<Long>> menusIdesOptional = Optional.ofNullable(productDto.getMenusIdes());
+        if(menusIdesOptional.isPresent()){
+            List<Long> menusIdes = menusIdesOptional.get();
+            if(menusIdes.contains(menuId)){
+                throw new DuplicateException("Menu already added");
+            }
+        }
+        ProductEntity productEntity = tempConverter.productDtoToEntity(productDto);
+        List<MenuEntity> menuEntityList = productEntity.getMenus();
+        if (menuEntityList == null) {
+            menuEntityList = new ArrayList<>();
+        }
+        menuEntityList.add(tempConverter.MenuDtoToEntity(menuDto));
+        productRepository.save(productEntity);
+        int points = productDto.getPoints();
+        Double price = productDto.getPrice();
+        menuDto.setPrice(menuDto.getPrice() + price);
+        menuDto.setPoints(menuDto.getPoints() + points);
+        menuService.updateMenu(menuDto, menuId);
     }
 }

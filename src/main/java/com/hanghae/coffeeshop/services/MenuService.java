@@ -17,4 +17,8 @@ public interface MenuService {
 
     List<MenuDto> getMenuList();
 
+    void clearMenu(Long menuId);
+
+    //void refreshMenuState(Long menuId);
+
 }

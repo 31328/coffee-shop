@@ -55,4 +55,10 @@ public class ProductController {
         productService.deleteProduct(productId);
         return new ResponseEntity<>("Product deleted", HttpStatus.OK);
     }
+
+    @PutMapping("/{productId}/{menuId}")
+    public ResponseEntity<String> addMenu(@PathVariable("productId") Long productId, @PathVariable("menuId") Long menuId){
+        productService.addMenu(productId,menuId);
+        return new ResponseEntity<>("Menu added to the product", HttpStatus.OK);
+    }
 }

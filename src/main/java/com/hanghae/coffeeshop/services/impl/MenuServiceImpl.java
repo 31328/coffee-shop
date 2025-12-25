@@ -31,6 +31,7 @@ public class MenuServiceImpl implements MenuService {
     @Transactional
     @Override
     public MenuDto createMenu(MenuDto menuDto) {
+        menuDto.setPrice(0.0);
         menuDto.setPoints(0);
         Optional<MenuEntity> existingMenuOptional = menuRepository.findByName(menuDto.getName());
         if (existingMenuOptional.isPresent()) {
@@ -89,6 +90,18 @@ public class MenuServiceImpl implements MenuService {
         }
         return returnValue;
     }
+    @Transactional
+    @Override
+    public void clearMenu(Long menuId) {
+        getMenu(menuId);
+        clearMenu(menuId);
+    }
+
+   /* @Override
+    public void refreshMenuState(Long menuId) {
+        MenuDto menuDto = getMenu(menuId);
+        point
+    }*/
 
 
 }
