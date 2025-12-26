@@ -111,10 +111,10 @@ public class ProductServiceImpl implements ProductService {
         }
         menuEntityList.add(tempConverter.MenuDtoToEntity(menuDto));
         productRepository.save(productEntity);
-        int points = productDto.getPoints();
-        Double price = productDto.getPrice();
-        menuDto.setPrice(menuDto.getPrice() + price);
-        menuDto.setPoints(menuDto.getPoints() + points);
+        Double price = productRepository.sumProductPriceByMenuId(menuId);
+        menuDto.setPrice(price);
+        Integer points = productRepository.sumProductPointsByMenuId(menuId);
+        menuDto.setPoints(points);
         menuService.updateMenu(menuDto, menuId);
     }
 }
