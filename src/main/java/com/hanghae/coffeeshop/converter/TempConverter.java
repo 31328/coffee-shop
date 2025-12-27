@@ -106,7 +106,7 @@ public class TempConverter {
             Optional<UserEntity> userOptional = userRepository.findById(userId);
             if (userOptional.isPresent()) {
                 UserEntity userEntity = userOptional.get();
-                returnValue.setUser(userEntity);
+                returnValue.setUser(UserEntity);
             }
         }
 

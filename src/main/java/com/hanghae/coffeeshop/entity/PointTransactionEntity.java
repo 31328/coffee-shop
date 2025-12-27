@@ -15,8 +15,8 @@ public class PointTransactionEntity implements Serializable {
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
+    @JoinColumn(name = "customer_id")
+    private CustomerEntity customer;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -25,20 +25,12 @@ public class PointTransactionEntity implements Serializable {
     @Column(nullable = false)
     private Integer points;
 
-    public UserEntity getUser() {
-        return user;
+    public Integer getPoints() {
+        return points;
     }
 
-    public void setUser(UserEntity user) {
-        this.user = user;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public void setPoints(Integer points) {
+        this.points = points;
     }
 
     public TransactionType getType() {
@@ -49,11 +41,19 @@ public class PointTransactionEntity implements Serializable {
         this.type = type;
     }
 
-    public Integer getPoints() {
-        return points;
+    public CustomerEntity getCustomer() {
+        return customer;
     }
 
-    public void setPoints(Integer points) {
-        this.points = points;
+    public void setCustomer(CustomerEntity customer) {
+        this.customer = customer;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

@@ -14,9 +14,33 @@ public class RoleEntity implements Serializable, GrantedAuthority {
     @Column(nullable = false, unique = true, length = 50)
     private String role;
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "roles")
-    private List<UserEntity> users;
+    private List<CustomerEntity> users;
     @Override
     public String getAuthority() {
-        return "";
+        return role;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public List<CustomerEntity> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<CustomerEntity> users) {
+        this.users = users;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }
