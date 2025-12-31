@@ -2,22 +2,34 @@ package com.hanghae.coffeeshop.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class UserDto implements Serializable {
 
     private Long id;
     @NotEmpty
-    @Size(min = 5, max = 20)
+    @Size(max = 40, min = 3)
+    private String firstName;
+    @NotEmpty
+    @Size(max = 40, min = 3)
+    private String lastName;
+    @NotEmpty
+    @Size(max = 100)
+    @Email(regexp = ".+[@].+[\\.].+")
+    private String email;
+    @NotEmpty
+    @Size(min = 8, max = 20)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
-
-    private Integer points;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Byte enabled;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    List<Long> rolesIdes;
 
     public Long getId() {
         return id;
@@ -25,6 +37,30 @@ public class UserDto implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
@@ -35,19 +71,19 @@ public class UserDto implements Serializable {
         this.password = password;
     }
 
-    public Integer getPoints() {
-        return points;
+    public Byte getEnabled() {
+        return enabled;
     }
 
-    public void setPoints(Integer points) {
-        this.points = points;
+    public void setEnabled(Byte enabled) {
+        this.enabled = enabled;
     }
 
-    public UserDto(String password, Integer points) {
-        this.password = password;
-        this.points = points;
+    public List<Long> getRolesIdes() {
+        return rolesIdes;
     }
 
-    public UserDto() {
+    public void setRolesIdes(List<Long> rolesIdes) {
+        this.rolesIdes = rolesIdes;
     }
 }

@@ -1,7 +1,6 @@
 package com.hanghae.coffeeshop.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.hanghae.coffeeshop.entity.MenuEntity;
 import jakarta.validation.constraints.*;
 
 import java.io.Serializable;

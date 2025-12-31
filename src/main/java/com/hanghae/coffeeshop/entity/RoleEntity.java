@@ -14,7 +14,8 @@ public class RoleEntity implements Serializable, GrantedAuthority {
     @Column(nullable = false, unique = true, length = 50)
     private String role;
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "roles")
-    private List<CustomerEntity> users;
+    private List<UserEntity> users;
+
     @Override
     public String getAuthority() {
         return role;
@@ -28,11 +29,11 @@ public class RoleEntity implements Serializable, GrantedAuthority {
         this.id = id;
     }
 
-    public List<CustomerEntity> getUsers() {
+    public List<UserEntity> getUsers() {
         return users;
     }
 
-    public void setUsers(List<CustomerEntity> users) {
+    public void setUsers(List<UserEntity> users) {
         this.users = users;
     }
 

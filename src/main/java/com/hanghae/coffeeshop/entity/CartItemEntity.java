@@ -1,18 +1,52 @@
 package com.hanghae.coffeeshop.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.io.Serializable;
+
 @Entity
 @Table(name = "cart_items")
-public class CartItemEntity implements Serializable {
+public abstract class CartItemEntity implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "cart_id", nullable = false)
+    private CartEntity cart;
+    @Column(nullable = false)
     private Integer quantity;
+    @Column(nullable = false)
     private Double price;
-    @OneToOne
-    private ProductEntity product;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public CartEntity getCart() {
+        return cart;
+    }
+
+    public void setCart(CartEntity cart) {
+        this.cart = cart;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
 }

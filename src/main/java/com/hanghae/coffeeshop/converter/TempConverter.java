@@ -3,9 +3,7 @@ package com.hanghae.coffeeshop.converter;
 import com.hanghae.coffeeshop.dto.*;
 import com.hanghae.coffeeshop.entity.*;
 import com.hanghae.coffeeshop.enumerated.TransactionType;
-import com.hanghae.coffeeshop.repositories.MenuRepository;
-import com.hanghae.coffeeshop.repositories.ProductRepository;
-import com.hanghae.coffeeshop.repositories.UserRepository;
+import com.hanghae.coffeeshop.repositories.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,6 +24,13 @@ public class TempConverter {
     private MenuRepository menuRepository;
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private CustomerRepository customerRepository;
+    @Autowired
+    private CartItemRepository cartItemRepository;
+    @Autowired
+    private CartRepository cartRepository;
+
    /* @Autowired
     public TempConverter(ModelMapper modelMapper, UserRepository userRepository, MenuRepository menuRepository) {
         this.modelMapper = modelMapper;
@@ -39,6 +44,109 @@ public class TempConverter {
         this.userRepository = userRepository;
         this.menuRepository = menuRepository;
     }*/
+
+    public CartEntity cartDtoToEntity(CartDto cartDto) {
+        CartEntity returnValue = modelMapper.map(cartDto, CartEntity.class);
+        Optional<Long> customerIdOptional = Optional.ofNullable(cartDto.getCustomerId());
+        if (customerIdOptional.isPresent()) {
+            Long customerId = customerIdOptional.get();
+            Optional<CustomerEntity> customerEntityOptional = customerRepository.findById(customerId);
+            if (customerEntityOptional.isPresent()) {
+                returnValue.setCustomer(customerEntityOptional.get());
+            }
+        }
+        Optional<List<Long>> cartItemsIdsOptional = Optional.ofNullable(cartDto.getCartItemsIds());
+        List<CartItemEntity> cartItemsEntity = new ArrayList<>();
+        if (cartItemsIdsOptional.isPresent()) {
+            List<Long> cartItemsIdes = cartItemsIdsOptional.get();
+            if (!cartItemsIdes.isEmpty()) {
+                for (Iterator<Long> iterator = cartItemsIdes.iterator(); iterator.hasNext(); ) {
+                    Long itemId = iterator.next();
+                    Optional<CartItemEntity> cartItemOptional = cartItemRepository.findById(itemId);
+                    if (cartItemOptional.isPresent()) {
+                    }
+                    cartItemsEntity.add(cartItemOptional.get());
+                }
+            }
+        }
+        returnValue.setCartItems(cartItemsEntity);
+        return returnValue;
+    }
+
+    public CartDto cartEntityToDto(CartEntity cartEntity) {
+        CartDto returnValue = modelMapper.map(cartEntity, CartDto.class);
+        Optional<CustomerEntity> customerOptional = Optional.ofNullable(cartEntity.getCustomer());
+        if (customerOptional.isPresent()) {
+            CustomerEntity customer = customerOptional.get();
+            returnValue.setCustomerId(customer.getId());
+        }
+        Optional<List<CartItemEntity>> cartItemsOptional = Optional.ofNullable(cartEntity.getCartItems());
+        List<Long> cartItemsIds = new ArrayList<>();
+        if (cartItemsOptional.isPresent()) {
+            List<CartItemEntity> cartItems = cartItemsOptional.get();
+            if (!cartItems.isEmpty()) {
+                for (Iterator<CartItemEntity> iterator = cartItems.iterator(); iterator.hasNext(); ) {
+                    CartItemEntity cartItem = iterator.next();
+                    cartItemsIds.add(cartItem.getId());
+                }
+            }
+        }
+        returnValue.setCartItemsIds(cartItemsIds);
+        return returnValue;
+    }
+
+    public CartItemDto cartItemEntityToDto(CartItemEntity cartItemEntity) {
+        CartItemDto returnValue = modelMapper.map(cartItemEntity, CartItemDto.class);
+        Optional<CartEntity> cartOptional = Optional.ofNullable(cartItemEntity.getCart());
+        if (cartOptional.isPresent()) {
+            CartEntity cart = cartOptional.get();
+            returnValue.setCartId(cart.getId());
+        }
+        return returnValue;
+    }
+
+    public CartItemEntity cartItemDtoToEntity(CartItemDto cartItemDto) {
+        CartItemEntity returnValue = modelMapper.map(cartItemDto, CartItemEntity.class);
+        Optional<Long> cartIdOptional = Optional.ofNullable(cartItemDto.getCartId());
+        if (cartIdOptional.isPresent()) {
+            Long cartId = cartIdOptional.get();
+            Optional<CartEntity> cartOptional = cartRepository.findById(cartId);
+            cartOptional.ifPresent(returnValue::setCart);
+        }
+        return returnValue;
+    }
+
+    public CustomerDto customerEntityToDto(CustomerEntity customerEntity) {
+        CustomerDto returnValue = modelMapper.map(customerEntity, CustomerDto.class);
+        Optional<UserEntity> userOptional = Optional.ofNullable(customerEntity.getUser());
+        if (userOptional.isPresent()) {
+            UserEntity userEntity = userOptional.get();
+            returnValue.setUserId(userEntity.getId());
+        }
+        Optional<CartEntity> cartOptional = Optional.ofNullable(customerEntity.getCart());
+        if (cartOptional.isPresent()) {
+            CartEntity cart = cartOptional.get();
+            returnValue.setCartId(cart.getId());
+        }
+        Optional<DeliveryAddressEntity> addressOptional = Optional.ofNullable(customerEntity.getAddress());
+        if (addressOptional.isPresent()){
+            DeliveryAddressEntity address = addressOptional.get();
+            returnValue.setAddressId(address.getId());
+        }
+        return returnValue;
+    }
+
+    public CustomerEntity customerDtoToEntity(CustomerDto customerDto){
+        CustomerEntity returnValue = modelMapper.map(customerDto, CustomerEntity.class);
+        Optional<Long> userIdOptional = Optional.ofNullable(customerDto.getUserId());
+        if (userIdOptional.isPresent()){
+            Long userId = userIdOptional.get();
+            Optional<CustomerEntity> userOptional = customerRepository.findById(userId);
+            if (userOptional.isPresent()){
+
+            }
+        }
+    }
 
     public MenuDto MenuEntityToDto(MenuEntity menuEntity) {
         MenuDto returnValue = modelMapper.map(menuEntity, MenuDto.class);
@@ -83,11 +191,7 @@ public class TempConverter {
 
     public PointTransactionDto pointsEntityToDto(PointTransactionEntity pointTransactionEntity) {
         PointTransactionDto returnValue = modelMapper.map(pointTransactionEntity, PointTransactionDto.class);
-        Optional<UserEntity> userOptional = Optional.ofNullable(pointTransactionEntity.getUser());
-        if (userOptional.isPresent()) {
-            UserEntity userEntity = userOptional.get();
-            returnValue.setUserId(userEntity.getId());
-        }
+
 
         Optional<TransactionType> typeOptional = Optional.ofNullable(pointTransactionEntity.getType());
         if (typeOptional.isPresent()) {
@@ -100,15 +204,7 @@ public class TempConverter {
 
     public PointTransactionEntity pointsDtoToEntity(PointTransactionDto pointTransactionDto) {
         PointTransactionEntity returnValue = modelMapper.map(pointTransactionDto, PointTransactionEntity.class);
-        Optional<Long> userIdOptional = Optional.ofNullable(pointTransactionDto.getUserId());
-        if (userIdOptional.isPresent()) {
-            Long userId = userIdOptional.get();
-            Optional<UserEntity> userOptional = userRepository.findById(userId);
-            if (userOptional.isPresent()) {
-                UserEntity userEntity = userOptional.get();
-                returnValue.setUser(UserEntity);
-            }
-        }
+
 
         Optional<String> typeOptional = Optional.ofNullable(pointTransactionDto.getType());
         if (typeOptional.isPresent()) {
@@ -123,39 +219,13 @@ public class TempConverter {
 
     public OrderDto orderEntityToDto(OrderEntity orderEntity) {
         OrderDto returnValue = modelMapper.map(orderEntity, OrderDto.class);
-        Optional<UserEntity> userOptional = Optional.ofNullable(orderEntity.getUser());
-        if (userOptional.isPresent()) {
-            UserEntity userEntity = userOptional.get();
-            returnValue.setUserId(userEntity.getId());
-        }
-        Optional<MenuEntity> menuOptional = Optional.ofNullable(orderEntity.getMenu());
-        if (menuOptional.isPresent()) {
-            MenuEntity menuEntity = menuOptional.get();
-            returnValue.setMenuId(menuEntity.getId());
-        }
+
         return returnValue;
     }
 
     public OrderEntity orderDtoToEntity(OrderDto orderDto) {
         OrderEntity returnValue = modelMapper.map(orderDto, OrderEntity.class);
-        Optional<Long> userIdOptional = Optional.ofNullable(orderDto.getUserId());
-        if (userIdOptional.isPresent()) {
-            Long userId = userIdOptional.get();
-            Optional<UserEntity> userOptional = userRepository.findById(userId);
-            if (userOptional.isPresent()) {
-                UserEntity userEntity = userOptional.get();
-                returnValue.setUser(userEntity);
-            }
-        }
-        Optional<Long> menuIdOptional = Optional.ofNullable(orderDto.getMenuId());
-        if (menuIdOptional.isPresent()) {
-            Long menuId = menuIdOptional.get();
-            Optional<MenuEntity> menuOptional = menuRepository.findById(menuId);
-            if (menuOptional.isPresent()) {
-                MenuEntity menuEntity = menuOptional.get();
-                returnValue.setMenu(menuEntity);
-            }
-        }
+
         return returnValue;
     }
 
@@ -181,10 +251,10 @@ public class TempConverter {
         if (menusIdesOptional.isPresent()) {
             List<Long> menusIdes = menusIdesOptional.get();
             Iterator<Long> iterator = menusIdes.iterator();
-            while (iterator.hasNext()){
+            while (iterator.hasNext()) {
                 Long menuIde = iterator.next();
                 Optional<MenuEntity> menuEntityOptional = menuRepository.findById(menuIde);
-                if(menuEntityOptional.isPresent()){
+                if (menuEntityOptional.isPresent()) {
                     menus.add(menuEntityOptional.get());
                 }
             }

@@ -8,6 +8,8 @@ import java.util.List;
 @Entity
 @Table(name = "cart")
 public class CartEntity implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "cart", orphanRemoval = true)
     private List<CartItemEntity> cartItems;
