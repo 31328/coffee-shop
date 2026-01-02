@@ -16,20 +16,27 @@ import java.util.Optional;
 @Component
 public class TempConverter {
 
+
+    private final ModelMapper modelMapper;
+    private final UserRepository userRepository;
+    private final MenuRepository menuRepository;
+    private final ProductRepository productRepository;
+    private final CustomerRepository customerRepository;
+    private final CartItemRepository cartItemRepository;
+    private final CartRepository cartRepository;
+    private final DeliveryAddressRepository deliveryAddressRepository;
+
     @Autowired
-    private ModelMapper modelMapper;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private MenuRepository menuRepository;
-    @Autowired
-    private ProductRepository productRepository;
-    @Autowired
-    private CustomerRepository customerRepository;
-    @Autowired
-    private CartItemRepository cartItemRepository;
-    @Autowired
-    private CartRepository cartRepository;
+    public TempConverter(ModelMapper modelMapper, UserRepository userRepository, MenuRepository menuRepository, CustomerRepository customerRepository, ProductRepository productRepository, CartItemRepository cartItemRepository, CartRepository cartRepository, DeliveryAddressRepository deliveryAddressRepository) {
+        this.modelMapper = modelMapper;
+        this.userRepository = userRepository;
+        this.menuRepository = menuRepository;
+        this.customerRepository = customerRepository;
+        this.productRepository = productRepository;
+        this.cartItemRepository = cartItemRepository;
+        this.cartRepository = cartRepository;
+        this.deliveryAddressRepository = deliveryAddressRepository;
+    }
 
    /* @Autowired
     public TempConverter(ModelMapper modelMapper, UserRepository userRepository, MenuRepository menuRepository) {
@@ -129,24 +136,70 @@ public class TempConverter {
             returnValue.setCartId(cart.getId());
         }
         Optional<DeliveryAddressEntity> addressOptional = Optional.ofNullable(customerEntity.getAddress());
-        if (addressOptional.isPresent()){
+        if (addressOptional.isPresent()) {
             DeliveryAddressEntity address = addressOptional.get();
             returnValue.setAddressId(address.getId());
         }
         return returnValue;
     }
 
-    public CustomerEntity customerDtoToEntity(CustomerDto customerDto){
+    public CustomerEntity customerDtoToEntity(CustomerDto customerDto) {
         CustomerEntity returnValue = modelMapper.map(customerDto, CustomerEntity.class);
         Optional<Long> userIdOptional = Optional.ofNullable(customerDto.getUserId());
-        if (userIdOptional.isPresent()){
+        if (userIdOptional.isPresent()) {
             Long userId = userIdOptional.get();
-            Optional<CustomerEntity> userOptional = customerRepository.findById(userId);
-            if (userOptional.isPresent()){
-
+            Optional<UserEntity> userOptional = userRepository.findById(userId);
+            if (userOptional.isPresent()) {
+                UserEntity userEntity = userOptional.get();
+                returnValue.setUser(userEntity);
             }
         }
+        Optional<Long> cartIdOptional = Optional.ofNullable(customerDto.getCartId());
+        if (cartIdOptional.isPresent()) {
+            Long cartId = cartIdOptional.get();
+            Optional<CartEntity> cartOptional = cartRepository.findById(cartId);
+            if (cartOptional.isPresent()) {
+                CartEntity cartEntity = cartOptional.get();
+                returnValue.setCart(cartEntity);
+            }
+        }
+        Optional<Long> addressIdOptional = Optional.ofNullable(customerDto.getAddressId());
+        if (addressIdOptional.isPresent()) {
+            Long addressId = addressIdOptional.get();
+            Optional<DeliveryAddressEntity> addressOptional = deliveryAddressRepository.findById(addressId);
+            if (addressOptional.isPresent()) {
+                DeliveryAddressEntity address = addressOptional.get();
+                returnValue.setAddress(address);
+            }
+        }
+        return returnValue;
     }
+
+    public DeliveryAddressDto DeliveryAddressEntityToDto(DeliveryAddressEntity addressEntity) {
+        DeliveryAddressDto returnValue = modelMapper.map(addressEntity, DeliveryAddressDto.class);
+        Optional<CustomerEntity> customerOptional = Optional.ofNullable(addressEntity.getCustomer());
+        if (customerOptional.isPresent()) {
+            CustomerEntity customerEntity = customerOptional.get();
+            returnValue.setCustomerId(customerEntity.getId());
+        }
+        return returnValue;
+    }
+
+    public DeliveryAddressEntity DeliveryAddressDtoToEntity(DeliveryAddressDto addressDto) {
+        DeliveryAddressEntity returnValue = modelMapper.map(addressDto, DeliveryAddressEntity.class);
+        Optional<Long> customerIdOptional = Optional.ofNullable(addressDto.getCustomerId());
+        if (customerIdOptional.isPresent()) {
+            Long customerId = customerIdOptional.get();
+            Optional<CustomerEntity> customerOptional = customerRepository.findById(customerId);
+            if (customerOptional.isPresent()) {
+                CustomerEntity customerEntity = customerOptional.get();
+                returnValue.setCustomer(customerEntity);
+            }
+        }
+        return returnValue;
+    }
+
+
 
     public MenuDto MenuEntityToDto(MenuEntity menuEntity) {
         MenuDto returnValue = modelMapper.map(menuEntity, MenuDto.class);
@@ -160,7 +213,6 @@ public class TempConverter {
         }
         returnValue.setProductIdes(productsIdes);
         return returnValue;
-        //products ProductEntity, List<Long>productIdes Dto
     }
 
     public MenuEntity MenuDtoToEntity(MenuDto menuDto) {
@@ -180,6 +232,44 @@ public class TempConverter {
         returnValue.setProducts(products);
         return returnValue;
     }
+
+    public MenuItemDto MenuItemEntityToDto(MenuItemEntity menuItemEntity){
+        MenuItemDto returnValue = new MenuItemDto();
+        Optional<MenuEntity> menuOptional = Optional.ofNullable(menuItemEntity.getMenu());
+        if (menuOptional.isPresent()){
+            MenuEntity menuEntity = menuOptional.get();
+            returnValue.setMenuId(menuEntity.getId());
+        }
+        return returnValue;
+    }
+
+    public MenuItemEntity menuItemDtoToEntity(MenuItemDto menuItemDto){
+        MenuItemEntity returnValue = new MenuItemEntity();
+        Optional<Long> menuIdOptional = Optional.ofNullable(menuItemDto.getMenuId());
+        if(menuIdOptional.isPresent()){
+            Long menuIdDto = menuIdOptional.get();
+            Optional<MenuEntity> menuOptional = menuRepository.findById(menuItemDto.getMenuId());
+            if (menuOptional.isPresent()){
+                MenuEntity menuEntity = menuOptional.get();
+                returnValue.setMenu(menuEntity);
+            }
+        }
+        return returnValue;
+    }
+
+    public OrderDto orderEntityToDto(OrderEntity orderEntity) {
+        OrderDto returnValue = modelMapper.map(orderEntity, OrderDto.class);
+
+        return returnValue;
+    }
+
+    public OrderEntity orderDtoToEntity(OrderDto orderDto) {
+        OrderEntity returnValue = modelMapper.map(orderDto, OrderEntity.class);
+
+        return returnValue;
+    }
+
+    // order, points, product, user
 
     public UserDto userEntityToDto(UserEntity userEntity) {
         return modelMapper.map(userEntity, UserDto.class);
@@ -214,18 +304,6 @@ public class TempConverter {
                 throw new IllegalArgumentException("Invalid transaction type: " + typeOptional.get());
             }
         }
-        return returnValue;
-    }
-
-    public OrderDto orderEntityToDto(OrderEntity orderEntity) {
-        OrderDto returnValue = modelMapper.map(orderEntity, OrderDto.class);
-
-        return returnValue;
-    }
-
-    public OrderEntity orderDtoToEntity(OrderDto orderDto) {
-        OrderEntity returnValue = modelMapper.map(orderDto, OrderEntity.class);
-
         return returnValue;
     }
 

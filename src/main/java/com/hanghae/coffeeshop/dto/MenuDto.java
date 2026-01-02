@@ -18,9 +18,10 @@ public class MenuDto implements Serializable {
     //@DecimalMin(value = "0")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Double price;
-    private List<Long> productIdes;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Integer points;
+    private List<Long> productIdes;
+
 
     public Integer getPoints() {
         return points;
