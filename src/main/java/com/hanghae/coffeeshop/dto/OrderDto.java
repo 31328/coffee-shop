@@ -1,22 +1,22 @@
 package com.hanghae.coffeeshop.dto;
 
-
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-
 import java.io.Serializable;
+
+import java.util.List;
 
 public class OrderDto implements Serializable {
 
     private Long id;
 
-    @NotNull
-    @Positive
-    private Long userId;
-    // validation rules
-    @NotNull
-    @Positive
-    private Long menuId;
+    private Long cartId;
+
+    private Double price;
+
+    private String createTimeStr;
+
+    private OrderAddressDto address;
+
+    private List<Long> orderedItemsIdes;
 
     public Long getId() {
         return id;
@@ -26,19 +26,43 @@ public class OrderDto implements Serializable {
         this.id = id;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Long getCartId() {
+        return cartId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setCartId(Long cartId) {
+        this.cartId = cartId;
     }
 
-    public Long getMenuId() {
-        return menuId;
+    public Double getPrice() {
+        return price;
     }
 
-    public void setMenuId(Long menuId) {
-        this.menuId = menuId;
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public String getCreateTimeStr() {
+        return createTimeStr;
+    }
+
+    public void setCreateTimeStr(String createTimeStr) {
+        this.createTimeStr = createTimeStr;
+    }
+
+    public OrderAddressDto getAddress() {
+        return address;
+    }
+
+    public void setAddress(OrderAddressDto address) {
+        this.address = address;
+    }
+
+    public List<Long> getOrderedItemsIdes() {
+        return orderedItemsIdes;
+    }
+
+    public void setOrderedItemsIdes(List<Long> orderedItemsIdes) {
+        this.orderedItemsIdes = orderedItemsIdes;
     }
 }

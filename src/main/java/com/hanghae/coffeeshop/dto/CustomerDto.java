@@ -1,5 +1,9 @@
 package com.hanghae.coffeeshop.dto;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
+
 import java.io.Serializable;
 
 public class CustomerDto implements Serializable {
@@ -9,6 +13,9 @@ public class CustomerDto implements Serializable {
     private Long userId;
     private Long cartId;
     private Long addressId;
+    @NotEmpty
+    @Size(max = 20)
+    private String phone;
 
     public Long getId() {
         return id;

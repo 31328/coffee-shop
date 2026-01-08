@@ -15,9 +15,5 @@ public interface UserService {
 
     UserDto updateUser(UserDto userDto, Long userId);
 
-    void addPoints(Long userId, Integer points);
-
-    void reducePoints(Long userId, Integer points);
-
     List<UserDto> listAllUsers();
 }

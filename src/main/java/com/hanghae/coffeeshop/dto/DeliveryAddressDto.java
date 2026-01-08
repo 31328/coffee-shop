@@ -19,8 +19,6 @@ public class DeliveryAddressDto implements Serializable {
     @NotEmpty
     @Size(min = 4, max = 20)
     private String postalCode;
-    @NotNull
-    @Positive
     private Long customerId;
 
     public Long getCustomerId() {

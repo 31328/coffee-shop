@@ -21,6 +21,8 @@ public class CustomerEntity implements Serializable {
     @OneToOne(fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "address_id", nullable = false)
     private DeliveryAddressEntity address;
+    @Column(nullable = false, length = 20)
+    private String phone;
 
     public Integer getPoints() {
         return points;

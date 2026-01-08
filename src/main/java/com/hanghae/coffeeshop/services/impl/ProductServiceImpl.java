@@ -109,7 +109,7 @@ public class ProductServiceImpl implements ProductService {
         if (menuEntityList == null) {
             menuEntityList = new ArrayList<>();
         }
-        menuEntityList.add(tempConverter.MenuDtoToEntity(menuDto));
+        menuEntityList.add(tempConverter.menuDtoToEntity(menuDto));
         productRepository.save(productEntity);
         Double price = productRepository.sumProductPriceByMenuId(menuId);
         menuDto.setPrice(price);

@@ -37,9 +37,9 @@ public class MenuServiceImpl implements MenuService {
         if (existingMenuOptional.isPresent()) {
             throw new DuplicateException("Menu with name " + menuDto.getName() + " already exists");
         }
-        MenuEntity menuEntity = tempConverter.MenuDtoToEntity(menuDto);
+        MenuEntity menuEntity = tempConverter.menuDtoToEntity(menuDto);
         MenuEntity savedEntity = menuRepository.save(menuEntity);
-        return tempConverter.MenuEntityToDto(savedEntity);
+        return tempConverter.menuEntityToDto(savedEntity);
     }
 
     @Transactional
@@ -54,8 +54,8 @@ public class MenuServiceImpl implements MenuService {
             }
         }
         menuDto.setId(currentMenu.getId());
-        MenuEntity updatedMenu = menuRepository.saveAndFlush(tempConverter.MenuDtoToEntity(menuDto));
-        return tempConverter.MenuEntityToDto(updatedMenu);
+        MenuEntity updatedMenu = menuRepository.saveAndFlush(tempConverter.menuDtoToEntity(menuDto));
+        return tempConverter.menuEntityToDto(updatedMenu);
     }
 
     @Transactional
@@ -73,7 +73,7 @@ public class MenuServiceImpl implements MenuService {
         MenuDto returnValue = null;
         Optional<MenuEntity> menuEntityOptional = menuRepository.findById(menuId);
         if (menuEntityOptional.isPresent()) {
-            returnValue = tempConverter.MenuEntityToDto(menuEntityOptional.get());
+            returnValue = tempConverter.menuEntityToDto(menuEntityOptional.get());
         } else {
             throw new InstanceUndefinedException("Menu with id:" + menuId + " does not exist");
         }
@@ -86,7 +86,7 @@ public class MenuServiceImpl implements MenuService {
         List<MenuEntity> menuEntities = menuRepository.findAll();
         List<MenuDto> returnValue = new ArrayList<>();
         for (Iterator<MenuEntity> iterator = menuEntities.iterator(); iterator.hasNext(); ) {
-            returnValue.add(tempConverter.MenuEntityToDto(iterator.next()));
+            returnValue.add(tempConverter.menuEntityToDto(iterator.next()));
         }
         return returnValue;
     }

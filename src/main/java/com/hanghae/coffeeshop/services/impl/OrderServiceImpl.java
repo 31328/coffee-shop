@@ -29,10 +29,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderDto addOrder(OrderDto orderDto) {
-        menuServiceProvider.get().getMenu(orderDto.getMenuId());
-        userService.getUser(orderDto.getUserId());
-        OrderEntity storedOrder = orderRepository.save(tempConverter.orderDtoToEntity(orderDto));
-        return tempConverter.orderEntityToDto(storedOrder);
+        return null;
     }
 
     @Override
