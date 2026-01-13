@@ -23,8 +23,14 @@ import java.util.Optional;
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final TempConverter tempConverter;
-    private final UserService userService;
-    private final Provider<MenuService> menuServiceProvider;
+
+
+
+    @Autowired
+    public OrderServiceImpl(OrderRepository orderRepository, TempConverter tempConverter) {
+        this.orderRepository = orderRepository;
+        this.tempConverter = tempConverter;
+    }
 
     @Override
     @Transactional
@@ -76,13 +82,7 @@ public class OrderServiceImpl implements OrderService {
         return returnValue;
     }
 
-    @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository, TempConverter tempConverter, UserService userService, Provider<MenuService> menuServiceProvider) {
-        this.orderRepository = orderRepository;
-        this.tempConverter = tempConverter;
-        this.userService = userService;
-        this.menuServiceProvider = menuServiceProvider;
-    }
+
 
 
 

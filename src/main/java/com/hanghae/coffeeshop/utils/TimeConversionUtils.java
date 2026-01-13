@@ -1,5 +1,6 @@
 package com.hanghae.coffeeshop.utils;
 
+import com.hanghae.coffeeshop.entity.CustomerEntity;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
@@ -32,10 +33,15 @@ public class TimeConversionUtils {
         } catch (DateTimeParseException ex) {
             System.out.println("Error converting to Timestamp" + ex.getMessage());
             throw ex;
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             System.out.println("Global exception caught " + ex.getMessage());
             throw ex;
         }
+    }
+
+    public Timestamp getOneYearAgo() {
+        Timestamp nowKorea = getCurrentKoreanTimestamp();
+
+        return Timestamp.valueOf(nowKorea.toLocalDateTime().minusYears(1));
     }
 }

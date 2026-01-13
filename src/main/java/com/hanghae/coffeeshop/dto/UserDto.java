@@ -30,6 +30,15 @@ public class UserDto implements Serializable {
     private Byte enabled;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     List<Long> rolesIdes;
+    private String authToken;
+
+    public String getAuthToken() {
+        return authToken;
+    }
+
+    public void setAuthToken(String authToken) {
+        this.authToken = authToken;
+    }
 
     public Long getId() {
         return id;

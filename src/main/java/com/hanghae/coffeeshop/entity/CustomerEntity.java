@@ -3,6 +3,8 @@ package com.hanghae.coffeeshop.entity;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+
 @Entity
 @Table(name = "customers")
 public class CustomerEntity implements Serializable {
@@ -23,6 +25,24 @@ public class CustomerEntity implements Serializable {
     private DeliveryAddressEntity address;
     @Column(nullable = false, length = 20)
     private String phone;
+    @Column(nullable = false, name = "registration_time")
+    private Timestamp registrationTime;
+
+    public Timestamp getRegistrationTime() {
+        return registrationTime;
+    }
+
+    public void setRegistrationTime(Timestamp registrationTime) {
+        this.registrationTime = registrationTime;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 
     public Integer getPoints() {
         return points;

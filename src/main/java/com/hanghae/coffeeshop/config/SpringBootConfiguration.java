@@ -18,6 +18,5 @@ public class SpringBootConfiguration implements WebMvcConfigurer {
                 .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PACKAGE_PRIVATE)
                 .setMatchingStrategy(MatchingStrategies.STRICT);
         return returnValue;
-
     }
 }

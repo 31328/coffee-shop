@@ -151,6 +151,11 @@ public class TempConverter {
             DeliveryAddressEntity address = addressOptional.get();
             returnValue.setAddressId(address.getId());
         }
+        Optional<Timestamp> registrationTimeOptional = Optional.ofNullable(customerEntity.getRegistrationTime());
+        if (registrationTimeOptional.isPresent()) {
+            Timestamp registrationTime = registrationTimeOptional.get();
+            returnValue.setRegistrationStr(timeConversionUtils.timestampToString(registrationTime));
+        }
         return returnValue;
     }
 
@@ -182,6 +187,11 @@ public class TempConverter {
                 DeliveryAddressEntity address = addressOptional.get();
                 returnValue.setAddress(address);
             }
+        }
+        Optional<String> registrationStrOptional = Optional.ofNullable(customerDto.getRegistrationStr());
+        if (registrationStrOptional.isPresent()) {
+            String registrationStr = registrationStrOptional.get();
+            returnValue.setRegistrationTime(timeConversionUtils.stringToTimestamp(registrationStr));
         }
         return returnValue;
     }

@@ -1,22 +1,24 @@
 package com.hanghae.coffeeshop.services.impl;
 
 import com.hanghae.coffeeshop.converter.TempConverter;
-import com.hanghae.coffeeshop.dto.PointTransactionDto;
+import com.hanghae.coffeeshop.dto.RoleDto;
 import com.hanghae.coffeeshop.dto.UserDto;
-import com.hanghae.coffeeshop.entity.PointTransactionEntity;
 import com.hanghae.coffeeshop.entity.UserEntity;
-import com.hanghae.coffeeshop.enumerated.TransactionType;
 import com.hanghae.coffeeshop.exceptions.InstanceUndefinedException;
 import com.hanghae.coffeeshop.repositories.PointTransactionRepository;
 import com.hanghae.coffeeshop.repositories.UserRepository;
+import com.hanghae.coffeeshop.services.RoleService;
 import com.hanghae.coffeeshop.services.UserService;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,11 +26,18 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final TempConverter tempConverter;
+    private final RoleService roleService;
+    private final AuthenticationManager authenticationManager;
+
     @Autowired
-    private TempConverter tempConverter;
-    @Autowired
-    private PointTransactionRepository pointTransactionRepository;
+    public UserServiceImpl(UserRepository userRepository, TempConverter tempConverter, RoleService roleService, AuthenticationManager authenticationManager) {
+        this.userRepository = userRepository;
+        this.tempConverter = tempConverter;
+        this.roleService = roleService;
+        this.authenticationManager = authenticationManager;
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -47,6 +56,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public UserDto getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.isAuthenticated()) {
+            String currentUserName = authentication.getName();
+            return getUserByEmail(currentUserName);
+        } else {
+            throw new InstanceUndefinedException("Invalid user");
+        }
+
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserDto getUserByEmail(String email) {
+        Optional<UserEntity> getUserByEmailOptional = userRepository.findByEmail(email);
+        if (getUserByEmailOptional.isPresent()) {
+            UserEntity getUserByEmail = getUserByEmailOptional.get();
+            return tempConverter.userEntityToDto(getUserByEmail);
+        } else {
+            throw new InstanceUndefinedException("User has not being found");
+        }
+    }
+
+    @Override
     @Transactional
     public void deleteUser(Long userId) {
         getUser(userId);
@@ -55,7 +90,28 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    public void banUser(Long userId) {
+        UserDto user = getUser(userId);
+        user.setEnabled((byte) 0);
+        userRepository.save(tempConverter.userDtoToEntity(user));
+    }
+
+    @Override
+    @Transactional
+    public void unbanUser(Long userId) {
+        UserDto user = getUser(userId);
+        user.setEnabled((byte) 1);
+        userRepository.save(tempConverter.userDtoToEntity(user));
+    }
+
+    @Override
+    @Transactional
     public UserDto addUser(UserDto userDto) {
+        userDto.setEnabled((byte) 1);
+        RoleDto roleUser = roleService.getRoleByRoleName("ROLE_USER");
+        List<Long> rolesIdes = new ArrayList<>();
+        rolesIdes.add(roleUser.getId());
+        userDto.setRolesIdes(rolesIdes);
         UserEntity addUserEntity = userRepository.save(tempConverter.userDtoToEntity(userDto));
         return tempConverter.userEntityToDto(addUserEntity);
     }
@@ -65,7 +121,8 @@ public class UserServiceImpl implements UserService {
     public UserDto updateUser(UserDto userDto, Long userId) {
         UserDto currentUserDto = getUser(userId);
         userDto.setId(currentUserDto.getId());
-        UserEntity saveUserEntity = userRepository.saveAndFlush(tempConverter.userDtoToEntity(userDto));
+        UserEntity saveUserEntity = userRepository
+                .save(tempConverter.userDtoToEntity(userDto));
         return tempConverter.userEntityToDto(saveUserEntity);
     }
 
@@ -79,4 +136,28 @@ public class UserServiceImpl implements UserService {
         }
         return returnValue;
     }
+
+    @Override
+    public Optional<Authentication> authenticateUser(String userName, String password) {
+        // Validate inputs
+        if (userName == null || userName.trim().isEmpty() ||
+                password == null || password.trim().isEmpty()) {
+            return Optional.empty();
+        }
+
+        // Use functional programming style
+        return userRepository.findByEmail(userName)
+                .map(user -> {
+                    try {
+                        UsernamePasswordAuthenticationToken authRequest =
+                                new UsernamePasswordAuthenticationToken(userName, password);
+                        return Optional.of(authenticationManager.authenticate(authRequest));
+                    } catch (AuthenticationException e) {
+                        return Optional.<Authentication>empty();
+                    }
+                })
+                .orElse(Optional.empty());
+    }
+
+
 }

@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 public class CustomerDto implements Serializable {
 
@@ -16,6 +17,15 @@ public class CustomerDto implements Serializable {
     @NotEmpty
     @Size(max = 20)
     private String phone;
+    private String registrationStr;
+
+    public String getRegistrationStr() {
+        return registrationStr;
+    }
+
+    public void setRegistrationStr(String registrationStr) {
+        this.registrationStr = registrationStr;
+    }
 
     public Long getId() {
         return id;
@@ -55,5 +65,13 @@ public class CustomerDto implements Serializable {
 
     public void setAddressId(Long addressId) {
         this.addressId = addressId;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

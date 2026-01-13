@@ -8,6 +8,8 @@ import java.util.List;
 public interface CustomerServices {
     List<CustomerDto> listCustomers();
 
+    List<CustomerDto> cutoffDate();
+
     CustomerDto addCustomer(RegistrationForm form);
 
     void deleteCustomer(Long customerId);
@@ -20,13 +22,13 @@ public interface CustomerServices {
 
     CustomerDto getCustomerByUserId(Long userId);
 
-    CustomerDto banCustomer(Long customerId);
+    void banCustomer(Long customerId);
 
-    CustomerDto unbanCustomer(Long customerId);
+    void unbanCustomer(Long customerId);
 
-    List<CustomerDto> banGroup(List<Long> customerId);
+    void banGroup(List<Long> customerIdes);
 
-    List<CustomerDto> unbanGroup(List<Long> customerId);
+    void unbanGroup(List<Long> customerIdes);
 
 
 }
