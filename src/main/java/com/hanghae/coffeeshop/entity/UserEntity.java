@@ -28,6 +28,18 @@ public class UserEntity implements Serializable, UserDetails {
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     List<RoleEntity> roles;
 
+    public UserEntity(Byte enabled, String password, String email, String lastName, String firstName) {
+        this.enabled = enabled;
+        this.password = password;
+        this.email = email;
+        this.lastName = lastName;
+        this.firstName = firstName;
+    }
+
+    public UserEntity() {
+
+    }
+
     public List<RoleEntity> getRoles() {
         return roles;
     }
@@ -78,7 +90,7 @@ public class UserEntity implements Serializable, UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return roles;
     }
 
     public String getPassword() {
@@ -87,27 +99,27 @@ public class UserEntity implements Serializable, UserDetails {
 
     @Override
     public String getUsername() {
-        return "";
+        return email;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
+        return true;
     }
 
     public void setPassword(String password) {

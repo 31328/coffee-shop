@@ -30,4 +30,5 @@ public interface CustomerRepository extends JpaRepository<CustomerEntity, Long> 
     @Query(value = "SELECT * FROM CUSTOMERS WHERE USER_ID= :userId", nativeQuery = true)
     Optional<CustomerEntity> findByUserId(@Param("userId") Long userId);
 
+    Optional<CustomerEntity> findByPhone(String phone);
 }

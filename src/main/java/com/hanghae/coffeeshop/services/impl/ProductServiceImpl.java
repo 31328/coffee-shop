@@ -98,9 +98,9 @@ public class ProductServiceImpl implements ProductService {
         ProductDto productDto = getProduct(productId);
         MenuDto menuDto = menuService.getMenu(menuId);
         Optional<List<Long>> menusIdesOptional = Optional.ofNullable(productDto.getMenusIdes());
-        if(menusIdesOptional.isPresent()){
+        if (menusIdesOptional.isPresent()) {
             List<Long> menusIdes = menusIdesOptional.get();
-            if(menusIdes.contains(menuId)){
+            if (menusIdes.contains(menuId)) {
                 throw new DuplicateException("Menu already added");
             }
         }

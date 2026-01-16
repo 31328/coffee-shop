@@ -9,7 +9,7 @@ import com.hanghae.coffeeshop.entity.CustomerEntity;
 import com.hanghae.coffeeshop.exceptions.InstanceUndefinedException;
 import com.hanghae.coffeeshop.repositories.CustomerRepository;
 import com.hanghae.coffeeshop.services.CartService;
-import com.hanghae.coffeeshop.services.CustomerServices;
+import com.hanghae.coffeeshop.services.CustomerService;
 import com.hanghae.coffeeshop.services.DeliveryAddressService;
 import com.hanghae.coffeeshop.services.UserService;
 import com.hanghae.coffeeshop.utils.RegistrationForm;
@@ -22,11 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
-public class CustomerServiceImpl implements CustomerServices {
+public class CustomerServiceImpl implements CustomerService {
     private final TempConverter tempConverter;
     private final CustomerRepository customerRepository;
     private final DeliveryAddressService deliveryAddressService;
@@ -168,6 +167,14 @@ public class CustomerServiceImpl implements CustomerServices {
         for (Iterator<Long> iterator = customerIdes.iterator(); iterator.hasNext(); ) {
             unbanCustomer(iterator.next());
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public CustomerDto getCustomerByPhone(String customerPhone) {
+        CustomerEntity customerEntity = customerRepository.findByPhone(customerPhone)
+                .orElseThrow(()->new InstanceUndefinedException("Customer had not being found"));
+        return tempConverter.customerEntityToDto(customerEntity);
     }
 
 

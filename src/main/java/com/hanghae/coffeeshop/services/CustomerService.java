@@ -5,7 +5,7 @@ import com.hanghae.coffeeshop.utils.RegistrationForm;
 
 import java.util.List;
 
-public interface CustomerServices {
+public interface CustomerService {
     List<CustomerDto> listCustomers();
 
     List<CustomerDto> cutoffDate();
@@ -30,5 +30,6 @@ public interface CustomerServices {
 
     void unbanGroup(List<Long> customerIdes);
 
+    CustomerDto getCustomerByPhone(String customerPhone);
 
 }

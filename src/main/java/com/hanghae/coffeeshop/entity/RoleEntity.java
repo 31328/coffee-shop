@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 import java.io.Serializable;
 import java.util.List;
+
 @Entity
 @Table(name = "roles")
 public class RoleEntity implements Serializable, GrantedAuthority {
@@ -15,6 +16,14 @@ public class RoleEntity implements Serializable, GrantedAuthority {
     private String role;
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "roles")
     private List<UserEntity> users;
+
+    public RoleEntity(String role) {
+        this.role = role;
+    }
+
+    public RoleEntity() {
+
+    }
 
     @Override
     public String getAuthority() {
