@@ -25,6 +25,28 @@ public class ProductDto implements Serializable {
     @NotEmpty
     @Size(min = 4, max = 255)
     private String imageUrl;
+    @NotEmpty
+    @Size(min = 4, max = 255)
+    private String productDescription;
+    @NotNull
+    @Positive
+    private Long productCategoryId;
+
+    public String getProductDescription() {
+        return productDescription;
+    }
+
+    public void setProductDescription(String productDescription) {
+        this.productDescription = productDescription;
+    }
+
+    public Long getProductCategoryId() {
+        return productCategoryId;
+    }
+
+    public void setProductCategoryId(Long productCategoryId) {
+        this.productCategoryId = productCategoryId;
+    }
 
     public String getImageUrl() {
         return imageUrl;

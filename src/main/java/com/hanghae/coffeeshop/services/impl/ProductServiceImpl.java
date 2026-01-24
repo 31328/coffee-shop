@@ -7,7 +7,9 @@ import com.hanghae.coffeeshop.entity.MenuEntity;
 import com.hanghae.coffeeshop.entity.ProductEntity;
 import com.hanghae.coffeeshop.exceptions.DuplicateException;
 import com.hanghae.coffeeshop.exceptions.InstanceUndefinedException;
+import com.hanghae.coffeeshop.repositories.MenuRepository;
 import com.hanghae.coffeeshop.repositories.ProductRepository;
+import com.hanghae.coffeeshop.services.CategoryServices;
 import com.hanghae.coffeeshop.services.MenuService;
 import com.hanghae.coffeeshop.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,20 +22,25 @@ import java.util.List;
 
 @Service
 public class ProductServiceImpl implements ProductService {
-    private ProductRepository productRepository;
-    private TempConverter tempConverter;
-    private MenuService menuService;
+    private final ProductRepository productRepository;
+    private final TempConverter tempConverter;
+    private final MenuService menuService;
+    private final CategoryServices categoryServices;
+    private final MenuRepository menuRepository;
 
     @Autowired
-    private void Initialise(ProductRepository productRepository, TempConverter tempConverter, MenuService menuService) {
+    public ProductServiceImpl(ProductRepository productRepository, TempConverter tempConverter, MenuService menuService, CategoryServices categoryServices, MenuRepository menuRepository) {
         this.productRepository = productRepository;
         this.tempConverter = tempConverter;
         this.menuService = menuService;
+        this.categoryServices = categoryServices;
+        this.menuRepository = menuRepository;
     }
 
     @Transactional
     @Override
-    public ProductDto createProduct(ProductDto productDto) {
+    public ProductDto addProduct(ProductDto productDto) {
+        categoryServices.getCategory(productDto.getProductCategoryId());
         Optional<ProductEntity> existingProductOptional = productRepository.findByName(productDto.getName());
         if (existingProductOptional.isPresent()) {
             throw new DuplicateException("Product with name " + productDto.getName() + " already exists");
@@ -41,12 +48,12 @@ public class ProductServiceImpl implements ProductService {
         ProductEntity productEntity = tempConverter.productDtoToEntity(productDto);
         ProductEntity saveEntity = productRepository.save(productEntity);
         return tempConverter.productEntityToDto(saveEntity);
-
     }
 
     @Transactional
     @Override
     public ProductDto updateProduct(ProductDto productDto, Long productId) {
+        categoryServices.getCategory(productDto.getProductCategoryId());
         ProductDto currentProduct = getProduct(productId);
         Optional<ProductEntity> existingProductOptional = productRepository.findByName(productDto.getName());
         if (existingProductOptional.isPresent()) {
@@ -94,7 +101,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public void addMenu(Long productId, Long menuId) {
+    public void addProductToMenu(Long productId, Long menuId) {
         ProductDto productDto = getProduct(productId);
         MenuDto menuDto = menuService.getMenu(menuId);
         Optional<List<Long>> menusIdesOptional = Optional.ofNullable(productDto.getMenusIdes());
@@ -110,11 +117,15 @@ public class ProductServiceImpl implements ProductService {
             menuEntityList = new ArrayList<>();
         }
         menuEntityList.add(tempConverter.menuDtoToEntity(menuDto));
+        productEntity.setMenus(menuEntityList);
         productRepository.save(productEntity);
         Double price = productRepository.sumProductPriceByMenuId(menuId);
+        System.out.println("Price: " + price);
         menuDto.setPrice(price);
         Integer points = productRepository.sumProductPointsByMenuId(menuId);
+        System.out.println("Points: " + points);
         menuDto.setPoints(points);
-        menuService.updateMenu(menuDto, menuId);
+        MenuEntity menuEntity = tempConverter.menuDtoToEntity(menuDto);
+        menuRepository.save(menuEntity);
     }
 }

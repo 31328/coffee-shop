@@ -30,12 +30,12 @@ public class MenuServiceImpl implements MenuService {
 
     @Transactional
     @Override
-    public MenuDto createMenu(MenuDto menuDto) {
+    public MenuDto addMenu(MenuDto menuDto) {
         menuDto.setPrice(0.0);
         menuDto.setPoints(0);
         Optional<MenuEntity> existingMenuOptional = menuRepository.findByName(menuDto.getName());
         if (existingMenuOptional.isPresent()) {
-            throw new DuplicateException("Menu with name " + menuDto.getName() + " already exists");
+            throw new DuplicateException("Menu with name \"" + menuDto.getName() + "\" already exists");
         }
         MenuEntity menuEntity = tempConverter.menuDtoToEntity(menuDto);
         MenuEntity savedEntity = menuRepository.save(menuEntity);
@@ -50,10 +50,13 @@ public class MenuServiceImpl implements MenuService {
         if (existingMenuOptional.isPresent()) {
             MenuEntity existingMenuEntity = existingMenuOptional.get();
             if (!Objects.equals(existingMenuEntity.getId(), currentMenu.getId())) {
-                throw new DuplicateException("Menu with name " + menuDto.getName() + " already exists");
+                throw new DuplicateException("Menu with name \"" + menuDto.getName() + "\" already exists");
             }
         }
         menuDto.setId(currentMenu.getId());
+        menuDto.setPoints(currentMenu.getPoints());
+        menuDto.setPrice(currentMenu.getPrice());
+        menuDto.setProductIdes(currentMenu.getProductIdes());
         MenuEntity updatedMenu = menuRepository.saveAndFlush(tempConverter.menuDtoToEntity(menuDto));
         return tempConverter.menuEntityToDto(updatedMenu);
     }
@@ -90,11 +93,17 @@ public class MenuServiceImpl implements MenuService {
         }
         return returnValue;
     }
+
     @Transactional
     @Override
     public void clearMenu(Long menuId) {
-        getMenu(menuId);
-        clearMenu(menuId);
+        System.out.println("Attempt to clear the menu");
+        MenuDto menuDto = getMenu(menuId);
+        menuRepository.clearMenu(menuId);
+        menuDto.setPoints(0);
+        menuDto.setPrice(0.0);
+        menuRepository.save(tempConverter.menuDtoToEntity(menuDto));
+        System.out.println("Menu cleared");
     }
 
    /* @Override

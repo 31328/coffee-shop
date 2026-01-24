@@ -53,14 +53,13 @@ public class UserController {
         return new ResponseEntity<String>("User with id: " + userId + " has been removed", HttpStatus.OK);
     }
 
-    @PutMapping(value = "/  {id}")
+    @PutMapping(value = "/{id}")
     @PreAuthorize(value = "hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<String> updateUser(@PathVariable("id") Long userId, @RequestBody @Validated UserDto userDto, Errors errors) {
         if (errors.hasErrors()) {
             throw new DataNotValidatedException("User data failed validation");
         }
         userService.updateUser(userDto, userId);
-
         return new ResponseEntity<>("User with id: " + userId + "updated", HttpStatus.OK);
     }
 }

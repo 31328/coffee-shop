@@ -5,7 +5,7 @@ import com.hanghae.coffeeshop.dto.ProductDto;
 import java.util.List;
 
 public interface ProductService {
-    ProductDto createProduct(ProductDto productDto);
+    ProductDto addProduct(ProductDto productDto);
 
     ProductDto updateProduct(ProductDto productDto, Long productId);
 
@@ -15,5 +15,5 @@ public interface ProductService {
 
     List<ProductDto> getProductList();
 
-    void addMenu(Long productId, Long menuId);
+    void addProductToMenu(Long productId, Long menuId);
 }

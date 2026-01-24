@@ -8,22 +8,29 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.security.auth.login.CredentialNotFoundException;
+
 @RestControllerAdvice
 public class ErrorsController {
 
 
     @ExceptionHandler(InstanceUndefinedException.class)
-    public ResponseEntity<String> handleInstanceUndefinedException(InstanceUndefinedException ex){
+    public ResponseEntity<String> handleInstanceUndefinedException(InstanceUndefinedException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.PRECONDITION_FAILED);
     }
 
     @ExceptionHandler(DataNotValidatedException.class)
-    public ResponseEntity<String> handleDataNotValidatedException(DataNotValidatedException ex){
+    public ResponseEntity<String> handleDataNotValidatedException(DataNotValidatedException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.PRECONDITION_FAILED);
     }
 
-    @ExceptionHandler(DuplicateException.class)
-    public ResponseEntity<String> HandleDuplicateException(DuplicateException ex){
+   @ExceptionHandler(DuplicateException.class)
+    public ResponseEntity<String> HandleDuplicateException(DuplicateException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(CredentialNotFoundException.class)
+    public ResponseEntity<String> HandleCredentialNotFoundException(CredentialNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 }

@@ -6,6 +6,7 @@ import com.hanghae.coffeeshop.converter.TempConverter;
 import com.hanghae.coffeeshop.dto.UserDto;
 import com.hanghae.coffeeshop.services.UserService;
 import com.hanghae.coffeeshop.utils.JwtUtil;
+import jakarta.inject.Provider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,7 +24,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Autowired
-    private UserService userService;
+    private Provider<UserService>  userServiceProvider;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -51,7 +52,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
 
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDto userDto = this.userService.getUserByEmail(email);
+            UserDto userDto = this.userServiceProvider.get().getUserByEmail(email);
             UserDetails userDetails = tempConverter.userDtoToEntity(userDto);
             if (jwtUtil.validateToken(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(

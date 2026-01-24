@@ -25,9 +25,32 @@ public class ProductEntity implements Serializable {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "product_menus", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "menu_id"))
     private List<MenuEntity> menus;
+    @Column(name = "product_description", nullable = false, length = 255)
+    private String productDescription;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id", nullable = false)
+    private CategoryEntity productCategory;
 
     @Column(nullable = false, name = "img_url")
     private String imageUrl;
+
+    public CategoryEntity getProductCategory() {
+        return productCategory;
+    }
+
+    public void setProductCategory(CategoryEntity productCategory) {
+        this.productCategory = productCategory;
+    }
+
+    public String getProductDescription() {
+        return productDescription;
+    }
+
+    public void setProductDescription(String productDescription) {
+        this.productDescription = productDescription;
+    }
+
 
     public Long getId() {
         return id;

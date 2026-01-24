@@ -14,6 +14,7 @@ import com.hanghae.coffeeshop.services.DeliveryAddressService;
 import com.hanghae.coffeeshop.services.UserService;
 import com.hanghae.coffeeshop.utils.RegistrationForm;
 import com.hanghae.coffeeshop.utils.TimeConversionUtils;
+import jakarta.inject.Provider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,16 +30,17 @@ public class CustomerServiceImpl implements CustomerService {
     private final TempConverter tempConverter;
     private final CustomerRepository customerRepository;
     private final DeliveryAddressService deliveryAddressService;
-    private final UserService userService;
+    private final Provider<UserService> userServiceProvider;
     private final CartService cartService;
     private final TimeConversionUtils timeConversionUtils;
 
     @Autowired
-    public CustomerServiceImpl(TempConverter tempConverter, CustomerRepository customerRepository, DeliveryAddressService deliveryAddressService, UserService userService, CartService cartService, TimeConversionUtils timeConversionUtils) {
+    public CustomerServiceImpl(TempConverter tempConverter, CustomerRepository customerRepository, DeliveryAddressService deliveryAddressService, Provider<UserService> userServiceProvider, CartService cartService, TimeConversionUtils timeConversionUtils) {
         this.tempConverter = tempConverter;
         this.customerRepository = customerRepository;
         this.deliveryAddressService = deliveryAddressService;
-        this.userService = userService;
+        this.userServiceProvider = userServiceProvider;
+
         this.cartService = cartService;
         this.timeConversionUtils = timeConversionUtils;
     }
@@ -79,7 +81,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Transactional
     public CustomerDto addCustomer(RegistrationForm form) {
         DeliveryAddressDto storedAddress = deliveryAddressService.addAddress(form.getAddress());
-        UserDto storeUser = userService.addUser(form.getUser());
+        UserDto storeUser = userServiceProvider.get().addUser(form.getUser());
         CartDto cartDto = new CartDto();
         CartDto storeCart = cartService.saveCart(cartDto);
         CustomerDto customerDto = form.getCustomer();
@@ -121,7 +123,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     @Transactional(readOnly = true)
     public CustomerDto getCurrentCustomer() {
-        UserDto userDto = userService.getCurrentUser();
+        UserDto userDto = userServiceProvider.get().getCurrentUser();
         return getCustomerByUserId(userDto.getId());
     }
 
@@ -137,14 +139,14 @@ public class CustomerServiceImpl implements CustomerService {
     @Transactional
     public void banCustomer(Long customerId) {
         CustomerDto customerDto = getCustomerById(customerId);
-        userService.banUser(customerDto.getUserId());
+        userServiceProvider.get().banUser(customerDto.getUserId());
     }
 
     @Override
     @Transactional
     public void unbanCustomer(Long customerId) {
         CustomerDto customer = getCustomerById(customerId);
-        userService.unbanUser(customer.getUserId());
+        userServiceProvider.get().unbanUser(customer.getUserId());
     }
 
     @Override

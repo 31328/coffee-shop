@@ -55,5 +55,10 @@ public class LoadData {
         }
     }
 
-
+/*
+    {
+        "username":"user@hanghae.coffeeshop.kr",
+            "password":"Admin123"
+    }
+*/
 }

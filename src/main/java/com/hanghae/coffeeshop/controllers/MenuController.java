@@ -25,24 +25,24 @@ public class MenuController {
         this.menuService = menuService;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/menuDetails/{id}")
     public ResponseEntity<MenuDto> getMenu(@PathVariable("id") Long menuId) {
         return new ResponseEntity<>(menuService.getMenu(menuId), HttpStatus.OK);
     }
 
-    @GetMapping("/menuDetails/{id}")
+    @GetMapping("/listAll")
     public ResponseEntity<List<MenuDto>> getMenuList() {
         return new ResponseEntity<>(menuService.getMenuList(), HttpStatus.OK);
     }
 
-    @PostMapping("/listAll")
+    @PostMapping
     @PreAuthorize(value = "hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<String> createMenu(@RequestBody @Validated MenuDto menuDto, Errors errors) {
+    public ResponseEntity<String> addMenu(@RequestBody @Validated MenuDto menuDto, Errors errors) {
         if (errors.hasErrors()) {
             throw new DataNotValidatedException("Menu data has not been validated");
         }
-        menuService.createMenu(menuDto);
-        return new ResponseEntity<>("The menu created", HttpStatus.CREATED);
+        MenuDto savedMenu = menuService.addMenu(menuDto);
+        return new ResponseEntity<>("The menu with id: " + savedMenu.getId() + " has been created", HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
@@ -52,15 +52,22 @@ public class MenuController {
             throw new DataNotValidatedException("Menu data has not been validated");
         }
         menuService.updateMenu(menuDto, menuId);
-        return new ResponseEntity<>("Menu updated", HttpStatus.OK);
+        return new ResponseEntity<>("Menu with id: " + menuId + " has been updated", HttpStatus.OK);
+
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize(value = "hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<String> deleteMenu(@PathVariable("id") Long menuId) {
         menuService.deleteMenu(menuId);
-        return new ResponseEntity<>("Menu deleted", HttpStatus.OK);
+        return new ResponseEntity<>("Menu with id: " + menuId + " has been deleted", HttpStatus.OK);
     }
 
+    @PutMapping("/clearMenu/{id}")
+    @PreAuthorize(value = "hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<String> clearMenu(@PathVariable("id") Long menuId) {
+        menuService.clearMenu(menuId);
+        return new ResponseEntity<>("Menu with id: " + menuId + " has been cleared", HttpStatus.OK);
+    }
 
 }

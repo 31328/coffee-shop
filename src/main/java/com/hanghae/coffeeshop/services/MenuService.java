@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface MenuService {
 
-    MenuDto createMenu(MenuDto menuDto);
+    MenuDto addMenu(MenuDto menuDto);
 
     MenuDto updateMenu(MenuDto menuDto, Long menuId);
 

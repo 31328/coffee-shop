@@ -32,9 +32,10 @@ public class TempConverter {
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
     private final RoleRepository roleRepository;
+    private final CategoryRepository productCategoryRepository;
 
     @Autowired
-    public TempConverter(ModelMapper modelMapper, UserRepository userRepository, MenuRepository menuRepository, CustomerRepository customerRepository, ProductRepository productRepository, CartItemRepository cartItemRepository, CartRepository cartRepository, DeliveryAddressRepository deliveryAddressRepository, TimeConversionUtils timeConversionUtils, OrderRepository orderRepository, OrderItemRepository orderItemRepository, RoleRepository roleRepository) {
+    public TempConverter(ModelMapper modelMapper, UserRepository userRepository, MenuRepository menuRepository, CustomerRepository customerRepository, ProductRepository productRepository, CartItemRepository cartItemRepository, CartRepository cartRepository, DeliveryAddressRepository deliveryAddressRepository, TimeConversionUtils timeConversionUtils, OrderRepository orderRepository, OrderItemRepository orderItemRepository, RoleRepository roleRepository, CategoryRepository productCategoryRepository) {
         this.modelMapper = modelMapper;
         this.userRepository = userRepository;
         this.menuRepository = menuRepository;
@@ -47,6 +48,7 @@ public class TempConverter {
         this.orderRepository = orderRepository;
         this.orderItemRepository = orderItemRepository;
         this.roleRepository = roleRepository;
+        this.productCategoryRepository = productCategoryRepository;
     }
 
    /* @Autowired
@@ -434,6 +436,11 @@ public class TempConverter {
             });
         }
         returnValue.setMenusIdes(menusIdes);
+        Optional<CategoryEntity> productCategoryOptional = Optional.ofNullable(productEntity.getProductCategory());
+        if (productCategoryOptional.isPresent()) {
+            CategoryEntity productCategory = productCategoryOptional.get();
+            returnValue.setProductCategoryId(productCategory.getId());
+        }
         return returnValue;
     }
 
@@ -454,6 +461,15 @@ public class TempConverter {
             }
         }
         returnValue.setMenus(menus);
+        Optional<Long> productCategoryIdOptional = Optional.ofNullable(productDto.getProductCategoryId());
+        if (productCategoryIdOptional.isPresent()) {
+            Long productCategoryId = productCategoryIdOptional.get();
+            Optional<CategoryEntity> productCategoryOptional = productCategoryRepository.findById(productCategoryId);
+            if (productCategoryOptional.isPresent()) {
+                CategoryEntity productCategory = productCategoryOptional.get();
+                returnValue.setProductCategory(productCategory);
+            }
+        }
         return returnValue;
     }
 
@@ -565,4 +581,41 @@ public class TempConverter {
         return returnValue;
     }
 
+    public CategoryDto categoryEntityToDto(CategoryEntity categoryEntity) {
+        CategoryDto returnValue = modelMapper.map(categoryEntity, CategoryDto.class);
+        List<Long> productsIdes = new ArrayList<>();
+        Optional<List<ProductEntity>> productsOptional = Optional.ofNullable(categoryEntity.getProducts());
+        if (productsOptional.isPresent()) {
+            List<ProductEntity> products = productsOptional.get();
+            if (!products.isEmpty()) {
+                for (Iterator<ProductEntity> iterator = products.iterator(); iterator.hasNext(); ) {
+                    ProductEntity product = iterator.next();
+                    productsIdes.add(product.getId());
+                }
+            }
+        }
+        returnValue.setProductsIdes(productsIdes);
+        return returnValue;
+    }
+
+    public CategoryEntity categoryDtoToEntity(CategoryDto categoryDto) {
+        CategoryEntity returnValue = modelMapper.map(categoryDto, CategoryEntity.class);
+        List<ProductEntity> products = new ArrayList<>();
+        Optional<List<Long>> productsIdesOptional = Optional.ofNullable(categoryDto.getProductsIdes());
+        if (productsIdesOptional.isPresent()) {
+            List<Long> productsIdes = productsIdesOptional.get();
+            if (!productsIdes.isEmpty()) {
+                for (Iterator<Long> iterator = productsIdes.iterator(); iterator.hasNext(); ) {
+                    Long productId = iterator.next();
+                    Optional<ProductEntity> productOptional = productRepository.findById(productId);
+                    if (productOptional.isPresent()) {
+                        ProductEntity product = productOptional.get();
+                        products.add(product);
+                    }
+                }
+            }
+        }
+        returnValue.setProducts(products);
+        return returnValue;
+    }
 }

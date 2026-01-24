@@ -5,10 +5,10 @@ import com.hanghae.coffeeshop.dto.RoleDto;
 import com.hanghae.coffeeshop.dto.UserDto;
 import com.hanghae.coffeeshop.entity.UserEntity;
 import com.hanghae.coffeeshop.exceptions.InstanceUndefinedException;
-import com.hanghae.coffeeshop.repositories.PointTransactionRepository;
 import com.hanghae.coffeeshop.repositories.UserRepository;
 import com.hanghae.coffeeshop.services.RoleService;
 import com.hanghae.coffeeshop.services.UserService;
+import jakarta.inject.Provider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,19 +25,20 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
+
     private final UserRepository userRepository;
     private final TempConverter tempConverter;
     private final RoleService roleService;
-    private final AuthenticationManager authenticationManager;
+    private final Provider<AuthenticationManager> authenticationManagerProvider;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, TempConverter tempConverter, RoleService roleService, AuthenticationManager authenticationManager) {
-        this.userRepository = userRepository;
-        this.tempConverter = tempConverter;
+    public UserServiceImpl(Provider<AuthenticationManager> authenticationManagerProvider, RoleService roleService, TempConverter tempConverter, UserRepository userRepository) {
+        this.authenticationManagerProvider = authenticationManagerProvider;
         this.roleService = roleService;
-        this.authenticationManager = authenticationManager;
+        this.tempConverter = tempConverter;
+        this.userRepository = userRepository;
     }
+
 
     @Override
     @Transactional(readOnly = true)
@@ -151,7 +152,7 @@ public class UserServiceImpl implements UserService {
                     try {
                         UsernamePasswordAuthenticationToken authRequest =
                                 new UsernamePasswordAuthenticationToken(userName, password);
-                        return Optional.of(authenticationManager.authenticate(authRequest));
+                        return Optional.of(authenticationManagerProvider.get().authenticate(authRequest));
                     } catch (AuthenticationException e) {
                         return Optional.<Authentication>empty();
                     }
