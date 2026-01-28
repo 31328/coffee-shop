@@ -1,5 +1,6 @@
 package com.hanghae.coffeeshop.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
@@ -11,6 +12,7 @@ public class CategoryDto implements Serializable {
     @NotEmpty
     @Size(min = 4, max = 50)
     private String name;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private List<Long> productsIdes;
 
     public Long getId() {

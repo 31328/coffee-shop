@@ -20,6 +20,7 @@ public class MenuDto implements Serializable {
     private Double price;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Integer points;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private List<Long> productIdes;
 
 

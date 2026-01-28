@@ -1,9 +1,7 @@
 package com.hanghae.coffeeshop.controllers;
 
-import com.hanghae.coffeeshop.dto.MenuDto;
 import com.hanghae.coffeeshop.dto.ProductDto;
 import com.hanghae.coffeeshop.exceptions.DataNotValidatedException;
-import com.hanghae.coffeeshop.services.MenuService;
 import com.hanghae.coffeeshop.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,12 +17,10 @@ import java.util.List;
 @RequestMapping("/products")
 public class ProductController {
     private final ProductService productService;
-    private final MenuService menuService;
 
     @Autowired
-    public ProductController(ProductService productService, MenuService menuService) {
+    public ProductController(ProductService productService) {
         this.productService = productService;
-        this.menuService = menuService;
     }
 
     @PostMapping
@@ -62,14 +58,5 @@ public class ProductController {
     public ResponseEntity<String> deleteProduct(@PathVariable("id") Long productId) {
         productService.deleteProduct(productId);
         return new ResponseEntity<>("Product with id: " + productId + " has been deleted", HttpStatus.OK);
-    }
-
-    @PutMapping("/{productId}/{menuId}")
-    @PreAuthorize(value = "hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<String> addProductToMenu(@PathVariable("productId") Long productId, @PathVariable("menuId") Long menuId) {
-        MenuDto providedMenu = menuService.getMenu(menuId);
-        ProductDto providedProduct = productService.getProduct(productId);
-        productService.addProductToMenu(productId, menuId);
-        return new ResponseEntity<>("Product " + providedProduct.getName() + ", id: " + productId + " has been added to " + providedMenu.getName() + " id: " + menuId, HttpStatus.OK);
     }
 }

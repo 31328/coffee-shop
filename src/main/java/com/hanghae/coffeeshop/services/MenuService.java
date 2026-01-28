@@ -19,6 +19,6 @@ public interface MenuService {
 
     void clearMenu(Long menuId);
 
-    //void refreshMenuState(Long menuId);
+    void refreshAllMenus();
 
 }

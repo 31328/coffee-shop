@@ -6,6 +6,7 @@ import com.hanghae.coffeeshop.entity.MenuEntity;
 import com.hanghae.coffeeshop.exceptions.DuplicateException;
 import com.hanghae.coffeeshop.exceptions.InstanceUndefinedException;
 import com.hanghae.coffeeshop.repositories.MenuRepository;
+import com.hanghae.coffeeshop.repositories.ProductRepository;
 import com.hanghae.coffeeshop.services.MenuService;
 import com.hanghae.coffeeshop.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,18 +17,29 @@ import java.util.*;
 
 @Service
 public class MenuServiceImpl implements MenuService {
-    private MenuRepository menuRepository;
-    private TempConverter tempConverter;
-    private OrderService orderService;
+    // private fields
+    private final MenuRepository menuRepository;
+    private final TempConverter tempConverter;
+    private final OrderService orderService;
+    private final ProductRepository productRepository;
 
-    //setter injection
+    //Constructor Injection
+    @Autowired
+    public MenuServiceImpl(MenuRepository menuRepository, TempConverter tempConverter, OrderService orderService, ProductRepository productRepository) {
+        this.menuRepository = menuRepository;
+        this.tempConverter = tempConverter;
+        this.orderService = orderService;
+        this.productRepository = productRepository;
+    }
+    /*
+    setter injection
     @Autowired
     private void Initialise(MenuRepository menuRepository, TempConverter tempConverter, OrderService orderService) {
         this.menuRepository = menuRepository;
         this.tempConverter = tempConverter;
         this.orderService = orderService;
     }
-
+    */
     @Transactional
     @Override
     public MenuDto addMenu(MenuDto menuDto) {
@@ -105,12 +117,20 @@ public class MenuServiceImpl implements MenuService {
         menuRepository.save(tempConverter.menuDtoToEntity(menuDto));
         System.out.println("Menu cleared");
     }
+    @Transactional
+    @Override
+    public void refreshAllMenus() {
+        List<MenuDto> allMenus = getMenuList();
+        for (Iterator<MenuDto> iterator = allMenus.iterator(); iterator.hasNext();){
+            MenuDto tempMenu = iterator.next();
+            Integer points = productRepository.sumProductPointsByMenuId(tempMenu.getId());
+            Double price = productRepository.sumProductPriceByMenuId(tempMenu.getId());
+            tempMenu.setPoints(points);
+            tempMenu.setPrice(price);
+            menuRepository.save(tempConverter.menuDtoToEntity(tempMenu));
+        }
 
-   /* @Override
-    public void refreshMenuState(Long menuId) {
-        MenuDto menuDto = getMenu(menuId);
-        point
-    }*/
+    }
 
 
 }

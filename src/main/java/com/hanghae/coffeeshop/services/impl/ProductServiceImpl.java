@@ -73,6 +73,7 @@ public class ProductServiceImpl implements ProductService {
     public void deleteProduct(Long productId) {
         getProduct(productId);
         productRepository.deleteById(productId);
+        menuService.refreshAllMenus();
     }
 
     @Transactional(readOnly = true)

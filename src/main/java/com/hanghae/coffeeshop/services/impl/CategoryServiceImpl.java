@@ -7,6 +7,7 @@ import com.hanghae.coffeeshop.exceptions.DuplicateException;
 import com.hanghae.coffeeshop.exceptions.InstanceUndefinedException;
 import com.hanghae.coffeeshop.repositories.CategoryRepository;
 import com.hanghae.coffeeshop.services.CategoryServices;
+import com.hanghae.coffeeshop.services.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,12 +23,13 @@ public class CategoryServiceImpl implements CategoryServices {
 
     private final TempConverter tempConverter;
     private final CategoryRepository categoryRepository;
+    private final MenuService menuService;
 
     @Autowired
-    public CategoryServiceImpl(TempConverter tempConverter,CategoryRepository categoryRepository) {
+    public CategoryServiceImpl(TempConverter tempConverter, CategoryRepository categoryRepository, MenuService menuService) {
         this.tempConverter = tempConverter;
         this.categoryRepository = categoryRepository;
-
+        this.menuService = menuService;
     }
 
     @Override
@@ -47,6 +49,7 @@ public class CategoryServiceImpl implements CategoryServices {
         getCategory(id);
         categoryRepository.deleteById(id);
         categoryRepository.flush();
+        menuService.refreshAllMenus();
     }
 
     @Override
