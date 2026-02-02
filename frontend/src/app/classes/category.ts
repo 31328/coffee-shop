@@ -1,4 +1,4 @@
-export class CartItem {
+export class Category {
     private id?: number;
     private name?: string;
     private productsIdes?: number[];

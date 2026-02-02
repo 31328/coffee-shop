@@ -59,4 +59,9 @@ public class ProductController {
         productService.deleteProduct(productId);
         return new ResponseEntity<>("Product with id: " + productId + " has been deleted", HttpStatus.OK);
     }
+
+    @GetMapping("/listAllByCategory/{id}")
+    public ResponseEntity<List<ProductDto>> findAllByCategoryId(@PathVariable("id") Long categoryId){
+       return new ResponseEntity<>(productService.findAllByCategoryId(categoryId), HttpStatus.OK);
+    }
 }

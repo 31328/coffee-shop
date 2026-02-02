@@ -1,51 +1,72 @@
-/* Custom styles for Hanghae Coffee Shop */
+/* Hero Section */
 .hero-section {
   background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
               url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
   background-size: cover;
   background-position: center;
-  margin-top: 56px; /* Account for fixed navbar */
+  min-height: 100vh;
+  padding-top: 76px;
+  display: flex;
+  align-items: center;
 }
 
+/* Product Images */
+.product-image {
+  height: 200px;
+  object-fit: cover;
+  width: 100%;
+}
+
+/* Card Styles */
 .card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid #eee;
 }
 
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
 }
 
-.btn-warning {
-  background-color: #ffc107;
-  border-color: #ffc107;
-}
-
-.btn-warning:hover {
-  background-color: #e0a800;
-  border-color: #d39e00;
-}
-
+/* Custom Colors */
 .text-warning {
-  color: #ffc107 !important;
+  color: #d4af37 !important;
 }
 
 .bg-warning {
-  background-color: #ffc107 !important;
+  background-color: #d4af37 !important;
 }
 
-.product-image {
-  height: 200px;
-  object-fit: cover;
+.btn-warning {
+  background-color: #d4af37;
+  border-color: #d4af37;
+  color: #000;
 }
 
-/* Responsive adjustments */
+.btn-warning:hover {
+  background-color: #b8941f;
+  border-color: #b8941f;
+}
+
+/* Menu Items */
+.menu-item {
+  border-left: 3px solid #d4af37;
+  padding-left: 15px;
+  margin-bottom: 10px;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
   .hero-section {
-    height: 70vh;
+    text-align: center;
+    padding-top: 100px;
   }
   
-  .display-3 {
+  .display-4 {
     font-size: 2.5rem;
+  }
+  
+  .product-image {
+    height: 150px;
   }
 }

@@ -1,0 +1,31 @@
+<!-- menu-list.component.html -->
+<div class="container my-4">
+  <div class="row g-4">
+    <div class="col-12 col-md-6 col-lg-4" *ngFor="let menu of getMenuList()">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">
+            {{ menu.getName() }}
+          </h5>
+
+          <p class="mb-1"><strong>Price:</strong> {{ menu.getPrice() }}</p>
+
+          <p class="mb-2"><strong>Points:</strong> {{ menu.getPoints() }}</p>
+
+          <div>
+            <strong>Products:</strong>
+            <ul class="list-group list-group-flush mt-2">
+              <!-- Use getProductNameById() instead of complex find logic -->
+              <li
+                class="list-group-item px-0 py-1"
+                *ngFor="let productId of menu.getProductIdes()"
+              >
+                {{ getProductNameById(productId) }}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

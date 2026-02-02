@@ -43,7 +43,7 @@ public class SecurityConfiguration {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .authorizeHttpRequests(authorize -> authorize.requestMatchers("/login", "/registration")
                         .anonymous()
-                        .requestMatchers("/api/health", "/prometheus", "/products/productDetails/*", "/products/listAll", "/menus/listAll", "/menus/menuDetails/*" , "/categories/categoryDetails/*", "/categories/listAll").permitAll()
+                        .requestMatchers("/api/health", "/prometheus", "/products/productDetails/*", "/products/listAll", "/menus/listAll", "/menus/menuDetails/*", "/categories/categoryDetails/*", "/categories/listAll","products/listAllByCategory/*").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class).build();
     }

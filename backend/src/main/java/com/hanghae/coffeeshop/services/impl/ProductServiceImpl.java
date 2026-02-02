@@ -129,4 +129,17 @@ public class ProductServiceImpl implements ProductService {
         MenuEntity menuEntity = tempConverter.menuDtoToEntity(menuDto);
         menuRepository.save(menuEntity);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProductDto> findAllByCategoryId(Long categoryId) {
+        categoryServices.getCategory(categoryId);
+        List<ProductEntity> allProducts = productRepository.findAllByCategoryId(categoryId);
+        List<ProductDto> returnValue = new ArrayList<>();
+        for (Iterator<ProductEntity> iterator = allProducts.iterator(); iterator.hasNext();){
+            ProductEntity tempProduct = iterator.next();
+            returnValue.add(tempConverter.productEntityToDto(tempProduct));
+        }
+        return returnValue;
+    }
 }

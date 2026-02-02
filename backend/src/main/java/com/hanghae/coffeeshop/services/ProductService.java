@@ -16,4 +16,6 @@ public interface ProductService {
     List<ProductDto> getProductList();
 
     void addProductToMenu(Long productId, Long menuId);
+
+    List<ProductDto> findAllByCategoryId(Long categoryId);
 }
